@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Goodall Family — Stardew Valley Style</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  background: linear-gradient(180deg, #1a2a1a 0%, #0f1a0f 100%);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Press Start 2P', monospace;
+  color: #fff;
+}
+.title { font-size: 30px; letter-spacing: 3px; margin-bottom: 6px; color: #8BC34A; text-shadow: 3px 3px 0 #33691E; }
+.subtitle { font-size: 13px; color: #6A8A6A; letter-spacing: 2px; margin-bottom: 50px; }
+.scene { display: flex; align-items: flex-end; gap: 60px; padding: 40px; }
+.character { display: flex; flex-direction: column; align-items: center; gap: 16px; }
+.name { font-size: 13px; letter-spacing: 1px; }
+canvas { image-rendering: pixelated; image-rendering: crisp-edges; }
+.ground { width: 100%; max-width: 1200px; height: 8px; background: linear-gradient(90deg, transparent, #3A5A2A, #2A4A1A, transparent); margin-bottom: 30px; border-radius: 2px; }
+</style>
+</head>
+<body>
+
+<div class="title">THE GOODALL FAMILY</div>
+<div class="subtitle">🌿 STARDEW VALLEY STYLE 🌿</div>
+<div class="scene" id="scene"></div>
+<div class="ground"></div>
+
+<script>
+const SCALE = 7;
+
+// Stardew style: rounder heads, warmer palette, softer outlines, cozy feel
+const family = [
+  {
+    name: 'Will',
+    color: '#22c55e',
+    palette: {
+      'r':'#A0522D','R':'#804020','q':'#C46A3A',
+      's':'#F5C4A1','S':'#DDB090','T':'#E8B890',
+      'e':'#4A8A4A',
+      'o':'#5A3A20', // warm outline
+      'L':'#2A2222','l':'#3A3232','i':'#4A4242',
+      'z':'#888888',
+      'j':'#3A4A5A','J':'#2A3A4A',
+      'k':'#3A2A1A',
+    },
+    grid: [
+      '....orrro.....',
+      '...orqrqro....',
+      '..orrRrrRro...',
+      '..orsssssro...',
+      '..ossTssTso...',
+      '...seSseS.....',
+      '...sssSsss....',
+      '...osSSSso....',
+      '....osso......',
+      '....Ls........',
+      '...LLzLL......',
+      '..LliilliL....',
+      '..LLLLLL L....',
+      '..LLsLsLL.....',
+      '..ojjjjjo.....',
+      '...jJ.Jj......',
+      '..kkk.kkk.....',
+    ]
+  },
+  {
+    name: 'Andrew',
+    color: '#3b82f6',
+    palette: {
+      'h':'#8B6914','H':'#6B4F10','q':'#A07A20',
+      's':'#F5C4A1','S':'#DDB090','T':'#E8B890',
+      'o':'#5A4A10', // warm outline
+      'g':'#2A2A2A','G':'#3A3A3A',
+      'e':'#3B82F6',
+      'b':'#C4A050','B':'#A08040','d':'#D4B060',
+      'n':'#2A4A6A','N':'#1E3A5A',
+      't':'#5A98DC',
+      'w':'#D4D4D4',
+      'k':'#2A2A2A',
+    },
+    grid: [
+      '...ohhhhho....',
+      '..ohhqhqhho...',
+      '..ohHhhHhho...',
+      '..ohsssssho...',
+      '..hssTssTsh...',
+      '..sgegsgeg s..',
+      '..sggsSsggs...',
+      '..osssssso....',
+      '..osbdbdso....',
+      '...sBBBs......',
+      '....sTs.......',
+      '...NwtN.......',
+      '..NNNtNNN.....',
+      '.NNNNNNN N....',
+      '.NNsNNsNN.....',
+      '..NNNNNNN.....',
+      '..NN...NN.....',
+      '.kkk...kkk....',
+    ]
+  },
+  {
+    name: 'Sarah',
+    color: '#a855f7',
+    palette: {
+      'f':'#E8C840','F':'#D4B430','a':'#F0D458',
+      's':'#F5C4A1','S':'#DDB090','T':'#E8B890',
+      'o':'#8A7A10', // warm outline
+      'g':'#2A2A2A',
+      'e':'#5B8AC4',
+      'p':'#F0E8D0',
+      'd':'#3A2A3A','D':'#2A1A2A','i':'#4A3A4A',  // plum-tinted dark top
+      'r':'#4A3A4A','R':'#3A2A3A',
+      'k':'#3A2A2A',
+    },
+    grid: [
+      '...offffo.....',
+      '..ofafaFfo....',
+      '..offFffFff...',
+      '.offsssssff...',
+      '.ffsTssTsff...',
+      '.fsgegsegsf...',
+      '.fsggssggsf...',
+      '.fsssssssfp...',
+      '.ofsSsSsfp....',
+      '..ofssfo......',
+      '....sTs.......',
+      '...ddddd......',
+      '..ddiiddd.....',
+      '..ddsdddd.....',
+      '...rrrrr......',
+      '...rr.rr......',
+      '..kkk.kkk.....',
+    ]
+  },
+  {
+    name: 'James',
+    color: '#f59e0b',
+    palette: {
+      'c':'#DAA520','C':'#C49518','Q':'#EAB830',
+      's':'#F5C4A1','S':'#DDB090','T':'#E8B890',
+      'o':'#8A6A08',
+      'e':'#6A8A6A',
+      'm':'#D4967A',
+      'x':'#4A4A4A','X':'#3A3A3A','v':'#5A5A5A',
+      'j':'#4A4A5A','J':'#3A3A4A',
+      'k':'#E8E8E8','K':'#D4D4D4',
+    },
+    grid: [
+      '.ocQcQcQo.....',
+      '.cCcQcQcC.....',
+      '.occCcCcco....',
+      '.ocssssCo.....',
+      '.cssTssTc.....',
+      '.sseSseS s....',
+      '.osssmsso.....',
+      '.osSSSSSo.....',
+      '..ossssso.....',
+      '....xs........',
+      's..xxxxx......',
+      'ssxvxvxvxs....',
+      '..xxxxxxx.....',
+      '..xxjjjxx.....',
+      '...jJjJj......',
+      '...jj.jj......',
+      '..KKk.kKK.....',
+    ]
+  },
+  {
+    name: 'Charlotte',
+    color: '#ec4899',
+    palette: {
+      'f':'#F0D868','F':'#D8C050','a':'#F8E078',
+      's':'#F5C4A1','S':'#DDB090','T':'#E8B890',
+      'o':'#8A7A10',
+      'e':'#5B8AC4',
+      'm':'#5EEAD4','M':'#4DD4BE','O':'#7AFAE8',
+      'p':'#EC4899','P':'#D4407A',
+      'j':'#4A4A60',
+      'w':'#FFFFFF',
+    },
+    grid: [
+      '...offf.fo....',
+      '..ofafaf.fo...',
+      '..offFfFf.f...',
+      '..ofssssfo....',
+      '..fssTsTs.....',
+      '..sseSseS.....',
+      '..osssssso....',
+      '..osSSSsso....',
+      '....ssss......',
+      '...mmsmm......',
+      '..mmMOmMm.....',
+      '..mmmmmmm.....',
+      '..mmsmmm m....',
+      '...jjjjj......',
+      '...jj.jj......',
+      '..ww...ww.....',
+      '..pp...pp.....',
+    ]
+  },
+  {
+    name: 'Violet',
+    color: '#F5DEB3',
+    palette: {
+      'f':'#F5DEB3','F':'#E8D1A0','c':'#F0C890',
+      'o':'#A09070',
+      'n':'#222222',
+      'e':'#222222',
+      'w':'#FFFFFF',
+      'p':'#FF69B4','P':'#FF8DC7',
+      't':'#FFB6D9',
+    },
+    grid: [
+      '..ofFfFfo.....',
+      '.offfcfffo....',
+      '.ofewcwefo....',
+      '.offfnfffo....',
+      '.offFfFffo....',
+      '..opptppo.....',
+      '..offfffo.....',
+      '.ofc...cfo....',
+    ]
+  },
+];
+
+function render() {
+  const scene = document.getElementById('scene');
+  family.forEach(char => {
+    const div = document.createElement('div');
+    div.className = 'character';
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    const grid = char.grid;
+    const h = grid.length;
+    const w = Math.max(...grid.map(r => r.length));
+    canvas.width = w * SCALE;
+    canvas.height = h * SCALE;
+    canvas.style.width = (w * SCALE) + 'px';
+    canvas.style.height = (h * SCALE) + 'px';
+    for (let y = 0; y < h; y++) {
+      for (let x = 0; x < grid[y].length; x++) {
+        const ch = grid[y][x];
+        if (ch !== '.' && char.palette[ch]) {
+          ctx.fillStyle = char.palette[ch];
+          ctx.fillRect(x * SCALE, y * SCALE, SCALE, SCALE);
+        }
+      }
+    }
+    const label = document.createElement('div');
+    label.className = 'name';
+    label.style.color = char.color;
+    label.textContent = char.name;
+    div.appendChild(canvas);
+    div.appendChild(label);
+    scene.appendChild(div);
+  });
+}
+render();
+</script>
+</body>
+</html>

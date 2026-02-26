@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Goodall Family — Chibi Kawaii</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  background: linear-gradient(180deg, #1a0a2a 0%, #0f0a1a 100%);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Press Start 2P', monospace;
+  color: #fff;
+}
+.title { font-size: 30px; letter-spacing: 3px; margin-bottom: 6px; color: #FF69B4; text-shadow: 3px 3px 0 #8B2252; }
+.subtitle { font-size: 13px; color: #AA6688; letter-spacing: 2px; margin-bottom: 50px; }
+.scene { display: flex; align-items: flex-end; gap: 50px; padding: 40px; }
+.character { display: flex; flex-direction: column; align-items: center; gap: 14px; }
+.name { font-size: 12px; letter-spacing: 1px; }
+canvas { image-rendering: pixelated; image-rendering: crisp-edges; }
+.ground { width: 100%; max-width: 1200px; height: 6px; background: linear-gradient(90deg, transparent, #3A2A4A, transparent); margin-bottom: 30px; }
+</style>
+</head>
+<body>
+
+<div class="title">THE GOODALL FAMILY</div>
+<div class="subtitle">♡ CHIBI KAWAII ♡</div>
+<div class="scene" id="scene"></div>
+<div class="ground"></div>
+
+<script>
+const SCALE = 7;
+
+// Chibi style: oversized heads (60% of height), tiny bodies, big sparkly eyes, round shapes
+const family = [
+  {
+    name: 'Will',
+    color: '#22c55e',
+    palette: {
+      'r':'#A0522D','R':'#804020','q':'#C46A3A',
+      's':'#F5C4A1','S':'#DDB090',
+      'e':'#22c55e','E':'#1a9a4a','w':'#FFFFFF', // big green eyes with highlight
+      'o':'#5A3A20',
+      'L':'#2A2222','l':'#3A3232',
+      'j':'#3A4A5A',
+      'k':'#2A1A1A',
+      'm':'#D4967A',
+    },
+    grid: [
+      '.....rrrr.......',
+      '...rrrrrrrr.....',
+      '..rrrRrrRrrr....',
+      '..rrssssssrr....',
+      '.rrsssssssrr....',
+      '.rswEswEssr.....',
+      '.rseesseesr.....',
+      '..ssssmsss......',
+      '..sssSSsss......',
+      '....ssss........',
+      '....Ls..........',
+      '...LLlLL........',
+      '...LLLLL........',
+      '...LsLsL........',
+      '....jjj.........',
+      '...kk.kk........',
+    ]
+  },
+  {
+    name: 'Andrew',
+    color: '#3b82f6',
+    palette: {
+      'h':'#8B6914','H':'#6B4F10','q':'#A07A20',
+      's':'#F5C4A1','S':'#DDB090',
+      'g':'#2A2A2A','G':'#3A3A3A',
+      'e':'#3B82F6','E':'#2563EB','w':'#FFFFFF',
+      'b':'#C4A050','B':'#A08040',
+      'n':'#1E3A5A','N':'#2A4A6A',
+      't':'#5A98DC',
+      'W':'#D4D4D4',
+      'k':'#1A1A1A',
+      'm':'#D4967A',
+    },
+    grid: [
+      '....hhhhhh......',
+      '...hhqhqhhh.....',
+      '..hhHhhhHhh.....',
+      '..hhssssshh.....',
+      '.hhsssssshh.....',
+      '.hgwEgsgwEgh....',
+      '.hgeegsgeegh....',
+      '..gsssmssgG.....',
+      '..ssbbbbss......',
+      '...sBBBs........',
+      '....sTs.........',
+      '...NWtWN........',
+      '...NNtNN........',
+      '...NNNNN........',
+      '...NsNsN........',
+      '....nnn.........',
+      '..kkk.kkk.......',
+    ]
+  },
+  {
+    name: 'Sarah',
+    color: '#a855f7',
+    palette: {
+      'f':'#E8C840','F':'#D4B430','a':'#F0D458',
+      's':'#F5C4A1','S':'#DDB090',
+      'g':'#2A2A2A',
+      'e':'#a855f7','E':'#8A45D7','w':'#FFFFFF',
+      'p':'#F0E8D0',
+      'd':'#3A2A3A','D':'#2A1A2A',
+      'r':'#4A3A4A',
+      'k':'#2A1A1A',
+      'm':'#D4967A',
+    },
+    grid: [
+      '....fffff.......',
+      '...fafaFfff.....',
+      '..fffFffFff.....',
+      '..ffsssssfff....',
+      '.ffssssssff.....',
+      '.fgwEsgwEsfp....',
+      '.fgeesgeesf.....',
+      '.fssssmsssf.....',
+      '.ffssSSssfp.....',
+      '..ffssssff......',
+      '....sTs.........',
+      '...ddddd........',
+      '...ddddd........',
+      '...dsdsd........',
+      '....rrr.........',
+      '...kk.kk........',
+    ]
+  },
+  {
+    name: 'James',
+    color: '#f59e0b',
+    palette: {
+      'c':'#DAA520','C':'#C49518','Q':'#EAB830',
+      's':'#F5C4A1','S':'#DDB090',
+      'e':'#f59e0b','E':'#D48A08','w':'#FFFFFF',
+      'm':'#D4967A',
+      'x':'#4A4A4A','X':'#3A3A3A',
+      'j':'#4A4A5A',
+      'k':'#E8E8E8',
+    },
+    grid: [
+      '..cQcQcQcQ......',
+      '.cCcQcQcQcC.....',
+      '.ccCcCcCccc.....',
+      '.ccsssssscc.....',
+      '.cssssssssc.....',
+      '.swEsswEss......',
+      '.seemsseess.....',
+      '..sssSSsss......',
+      '...ssssss.......',
+      's...xs..........',
+      'ss.xxxxx........',
+      'ss.xxxxx.ss.....',
+      '..xxxxxxx.......',
+      '...xjjjx........',
+      '...jj.jj........',
+      '..kk..kk........',
+    ]
+  },
+  {
+    name: 'Charlotte',
+    color: '#ec4899',
+    palette: {
+      'f':'#F0D868','F':'#D8C050','a':'#F8E078',
+      's':'#F5C4A1','S':'#DDB090',
+      'e':'#ec4899','E':'#D4407A','w':'#FFFFFF',
+      'm':'#5EEAD4','M':'#4DD4BE',
+      'p':'#EC4899','P':'#D4407A',
+      'j':'#4A4A60',
+      'W':'#FFFFFF',
+      'u':'#D4967A',
+    },
+    grid: [
+      '....ffff.f......',
+      '...fafaf..f.....',
+      '..fffFfFf.f.....',
+      '..ffssssff......',
+      '.ffsssssff......',
+      '.fswEswEsf......',
+      '.fseesseesf.....',
+      '..sssuSss.......',
+      '..sssSSss.......',
+      '....sss.........',
+      '...mmsm.........',
+      '..mmMmMmm.......',
+      '..mmmmmmm.......',
+      '...jjjjj........',
+      '...jj.jj........',
+      '..WW..WW........',
+      '..pP..pP........',
+    ]
+  },
+  {
+    name: 'Violet',
+    color: '#F5DEB3',
+    palette: {
+      'f':'#F5DEB3','F':'#E8D1A0','c':'#F0C890',
+      'n':'#222222',
+      'e':'#222222','w':'#FFFFFF',
+      'p':'#FF69B4',
+      't':'#FFB6D9',
+      'm':'#D4967A',
+    },
+    grid: [
+      '..fFffFf........',
+      '.fFfFfFfFf......',
+      '.fffffffffff....',
+      '.ffwefcfweff....',
+      '.ffeefnfeeff....',
+      '.fffFmFfFff.....',
+      '..fpptppf.......',
+      '..fffffff.......',
+      '.ffc...cff......',
+    ]
+  },
+];
+
+function render() {
+  const scene = document.getElementById('scene');
+  family.forEach(char => {
+    const div = document.createElement('div');
+    div.className = 'character';
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    const grid = char.grid;
+    const h = grid.length;
+    const w = Math.max(...grid.map(r => r.length));
+    canvas.width = w * SCALE;
+    canvas.height = h * SCALE;
+    canvas.style.width = (w * SCALE) + 'px';
+    canvas.style.height = (h * SCALE) + 'px';
+    for (let y = 0; y < h; y++) {
+      for (let x = 0; x < grid[y].length; x++) {
+        const ch = grid[y][x];
+        if (ch !== '.' && char.palette[ch]) {
+          ctx.fillStyle = char.palette[ch];
+          ctx.fillRect(x * SCALE, y * SCALE, SCALE, SCALE);
+        }
+      }
+    }
+    const label = document.createElement('div');
+    label.className = 'name';
+    label.style.color = char.color;
+    label.textContent = char.name;
+    div.appendChild(canvas);
+    div.appendChild(label);
+    scene.appendChild(div);
+  });
+}
+render();
+</script>
+</body>
+</html>

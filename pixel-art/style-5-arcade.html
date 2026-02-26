@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Goodall Family — Retro Arcade</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  background: #0a0a0a;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Press Start 2P', monospace;
+  color: #fff;
+}
+.title { font-size: 32px; letter-spacing: 4px; margin-bottom: 6px; color: #FF4444; text-shadow: 4px 4px 0 #880000, -1px -1px 0 #FF8888; }
+.subtitle { font-size: 13px; color: #AA4444; letter-spacing: 3px; margin-bottom: 50px; }
+.scene { display: flex; align-items: flex-end; gap: 50px; padding: 40px; }
+.character { display: flex; flex-direction: column; align-items: center; gap: 16px; }
+.name { font-size: 14px; letter-spacing: 2px; text-shadow: 2px 2px 0 #333; }
+canvas { image-rendering: pixelated; image-rendering: crisp-edges; }
+.ground { width: 100%; max-width: 1200px; height: 4px; background: linear-gradient(90deg, transparent, #FF4444, #FF8844, #FF4444, transparent); margin-bottom: 30px; box-shadow: 0 0 20px rgba(255,68,68,0.3); }
+/* Scanline overlay */
+body::after {
+  content: '';
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0,0,0,0.08) 2px,
+    rgba(0,0,0,0.08) 4px
+  );
+  pointer-events: none;
+}
+</style>
+</head>
+<body>
+
+<div class="title">THE GOODALLS</div>
+<div class="subtitle">⚡ RETRO ARCADE ⚡</div>
+<div class="scene" id="scene"></div>
+<div class="ground"></div>
+
+<script>
+const SCALE = 6;
+
+// Arcade style: bolder, action poses, thick outlines, high contrast, Street Fighter vibes
+const family = [
+  {
+    name: 'Will',
+    color: '#22c55e',
+    palette: {
+      'o':'#000000',
+      'r':'#A0522D','R':'#7A3B1E','q':'#C46A3A',
+      's':'#F5C4A1','S':'#D4A580','T':'#E8B890',
+      'e':'#4A8A4A',
+      'L':'#1a1a1a','l':'#2a2a2a','i':'#444444',
+      'z':'#AAAAAA',
+      'j':'#2A3A4A','J':'#3A4A5A',
+      'k':'#1A1A1A','K':'#2A2A2A',
+    },
+    grid: [
+      '.....orrrro........',
+      '....orrqrqro.......',
+      '...orrRrrRrro......',
+      '...orsssssssro.....',
+      '...ossSssSsso......',
+      '....ssesSeso.......',
+      '....sssssss........',
+      '....ossSSSo........',
+      '.....ossso.........',
+      '.....oLso..........',
+      '....oLLzLLo........',
+      '...oLLizLiLo.......',
+      '...oLLlllLLo.......',
+      '...oLLLLLLLo.......',
+      '...oLLsLsLLo.......',
+      '....ojjjjjo........',
+      '....ojj.jjo........',
+      '...oKKk.kKKo.......',
+    ]
+  },
+  {
+    name: 'Andrew',
+    color: '#3b82f6',
+    palette: {
+      'o':'#000000',
+      'h':'#8B6914','H':'#6B4F10','q':'#A07A20',
+      's':'#F5C4A1','S':'#D4A580',
+      'g':'#1A1A1A','G':'#2A2A2A',
+      'e':'#3B82F6','E':'#5AA0FF',
+      'b':'#C4A050','B':'#A08040',
+      'n':'#1E3A5A','N':'#2A4A6A','M':'#152D47',
+      't':'#5A98DC',
+      'w':'#D4D4D4',
+      'k':'#111111',
+    },
+    grid: [
+      '....ohhhhhho.......',
+      '...ohhqhqhhho......',
+      '...ohHhhHhhho......',
+      '...ohssssssho......',
+      '...hssSssSsh.......',
+      '...sgegosgegs......',
+      '...sggsSsggo.......',
+      '...osssssso........',
+      '...osbbbso.........',
+      '....osBso..........',
+      '.....oso...........',
+      '....oNwtoN.........',
+      '...oNNNtNNNo.......',
+      '..oNNNNtNNNNo......',
+      '..oNNNNNNNNNo......',
+      '..oNNsNNsNNNo......',
+      '...oNNNNNNo........',
+      '...oNN..NNo........',
+      '..okko..okko.......',
+    ]
+  },
+  {
+    name: 'Sarah',
+    color: '#a855f7',
+    palette: {
+      'o':'#000000',
+      'f':'#E8C840','F':'#D4B430','a':'#F0D458',
+      's':'#F5C4A1','S':'#D4A580',
+      'g':'#1A1A1A',
+      'e':'#5B8AC4',
+      'p':'#F0E8D0',
+      'd':'#2A2A2A','D':'#1E1E1E','i':'#3A3A3A',
+      'r':'#3A2A3A','R':'#2A1A2A',
+      'k':'#1A1A1A',
+    },
+    grid: [
+      '....offffo.........',
+      '...ofafaFffo.......',
+      '..offfFffFffo......',
+      '..offssssssffo.....',
+      '.offsssSsSsffo.....',
+      '.ofsgegsgegsfo.....',
+      '.ofsggssSsggsfo....',
+      '.ofsssssssssfo.....',
+      '.oofsSsSsSofop.....',
+      '...offsssffo.......',
+      '.....osso..........',
+      '....odddddo........',
+      '...oddiiiddo.......',
+      '...oddddddddo......',
+      '...oddsddddo.......',
+      '....orrrrro........',
+      '....orr.rro........',
+      '...okko.okko.......',
+    ]
+  },
+  {
+    name: 'James',
+    color: '#f59e0b',
+    palette: {
+      'o':'#000000',
+      'c':'#DAA520','C':'#C49518','Q':'#EAB830',
+      's':'#F5C4A1','S':'#D4A580',
+      'e':'#6A8A6A',
+      'm':'#D4967A',
+      'x':'#4A4A4A','X':'#3A3A3A','v':'#5A5A5A',
+      'j':'#3A3A50','J':'#4A4A60',
+      'k':'#EEEEEE','K':'#DDDDDD',
+    },
+    grid: [
+      '..ocQcQcQco........',
+      '.ocCcQcQcCco.......',
+      '.occcCcCccco.......',
+      '.ocssssssCo........',
+      '.ocsSssSsco........',
+      '..ssesSesso........',
+      '..osssmsso.........',
+      '..osSSSSSo.........',
+      '...osssso..........',
+      '.....oxo...........',
+      'os..oxxxo..........',
+      'oss.oxvxo.os.......',
+      'ossoxxxxoss........',
+      '..oxxxxxxo.........',
+      '...oxjjxo..........',
+      '...ojjjjo..........',
+      '...ojj.jjo.........',
+      '..oKKk.kKKo........',
+    ]
+  },
+  {
+    name: 'Charlotte',
+    color: '#ec4899',
+    palette: {
+      'o':'#000000',
+      'f':'#F0D868','F':'#D8C050','a':'#F8E078',
+      's':'#F5C4A1','S':'#D4A580',
+      'e':'#5B8AC4',
+      'm':'#5EEAD4','M':'#4DD4BE','O':'#7AFAE8',
+      'p':'#EC4899','P':'#D4407A',
+      'j':'#4A4A60',
+      'w':'#FFFFFF',
+    },
+    grid: [
+      '....offf.fo........',
+      '...ofafaf.fo.......',
+      '...offFfFf.fo......',
+      '...ofssssfo........',
+      '...osSssSso........',
+      '...sseSseSo........',
+      '...ossssso.........',
+      '...osSSSso.........',
+      '....ossso..........',
+      '....omso...........',
+      '...ommmmmo.........',
+      '..ommMOmMmo........',
+      '..ommmmmmmo........',
+      '...ojjjjjo.........',
+      '...ojj.jjo.........',
+      '..oww...wwo........',
+      '..opp...ppo........',
+    ]
+  },
+  {
+    name: 'Violet',
+    color: '#F5DEB3',
+    palette: {
+      'o':'#000000',
+      'f':'#F5DEB3','F':'#E8D1A0','c':'#F0C890',
+      'n':'#222222',
+      'e':'#222222',
+      'w':'#FFFFFF',
+      'p':'#FF69B4',
+      't':'#FFB6D9',
+    },
+    grid: [
+      '..ofFfFfo..........',
+      '.offfcfffo.........',
+      '.ofewcwefo.........',
+      '.offfnfffo.........',
+      '.offFfFffo.........',
+      '..oppptppo.........',
+      '..offfffo..........',
+      '.ofc...cfo.........',
+    ]
+  },
+];
+
+function render() {
+  const scene = document.getElementById('scene');
+  family.forEach(char => {
+    const div = document.createElement('div');
+    div.className = 'character';
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    const grid = char.grid;
+    const h = grid.length;
+    const w = Math.max(...grid.map(r => r.length));
+    canvas.width = w * SCALE;
+    canvas.height = h * SCALE;
+    canvas.style.width = (w * SCALE) + 'px';
+    canvas.style.height = (h * SCALE) + 'px';
+    for (let y = 0; y < h; y++) {
+      for (let x = 0; x < grid[y].length; x++) {
+        const ch = grid[y][x];
+        if (ch !== '.' && char.palette[ch]) {
+          ctx.fillStyle = char.palette[ch];
+          ctx.fillRect(x * SCALE, y * SCALE, SCALE, SCALE);
+        }
+      }
+    }
+    const label = document.createElement('div');
+    label.className = 'name';
+    label.style.color = char.color;
+    label.textContent = char.name;
+    div.appendChild(canvas);
+    div.appendChild(label);
+    scene.appendChild(div);
+  });
+}
+render();
+</script>
+</body>
+</html>

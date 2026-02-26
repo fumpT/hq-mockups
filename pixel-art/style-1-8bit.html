@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=3840, height=2160">
+<title>Goodall Family — 8-Bit Classic</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  background: #0a0a0a;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Press Start 2P', monospace;
+  color: #fff;
+  overflow: hidden;
+}
+.title {
+  font-size: 36px;
+  letter-spacing: 4px;
+  margin-bottom: 8px;
+  text-shadow: 4px 4px 0 #333;
+}
+.subtitle {
+  font-size: 14px;
+  color: #666;
+  letter-spacing: 2px;
+  margin-bottom: 60px;
+}
+.scene {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  gap: 80px;
+  padding: 40px 80px;
+}
+.character {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+.name {
+  font-size: 16px;
+  letter-spacing: 2px;
+}
+canvas {
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+/* Ground line */
+.ground {
+  width: 100%;
+  max-width: 1200px;
+  height: 4px;
+  background: #1a1a1a;
+  margin-top: -2px;
+  margin-bottom: 40px;
+}
+/* Floating pixels decoration */
+.sparkle {
+  position: fixed;
+  width: 6px; height: 6px;
+  background: rgba(255,255,255,0.05);
+  animation: twinkle 3s infinite;
+}
+@keyframes twinkle {
+  0%, 100% { opacity: 0.03; }
+  50% { opacity: 0.1; }
+}
+</style>
+</head>
+<body>
+
+<div class="title">THE GOODALL FAMILY</div>
+<div class="subtitle">★ 8-BIT CLASSIC ★</div>
+
+<div class="scene" id="scene"></div>
+<div class="ground"></div>
+
+<script>
+const SCALE = 10;
+
+const family = [
+  {
+    name: 'Will',
+    color: '#22c55e',
+    palette: {
+      'r': '#A0522D', 'R': '#7A3B1E',  // auburn hair
+      's': '#F5C4A1', 'S': '#D4A580',  // skin, shadow
+      'e': '#4A7A4A',                   // green eyes
+      'L': '#1a1a1a', 'l': '#2a2a2a',  // leather jacket
+      'z': '#444444',                   // zipper/detail
+      'j': '#333333',                   // jeans dark
+      'k': '#111111',                   // boots
+    },
+    grid: [
+      '...rrrr.....',
+      '..rrrrrr....',
+      '..rRrrRr....',
+      '..rsssssr...',
+      '..seSseS....',
+      '..ssssss....',
+      '..ssSSSs....',
+      '...ssss.....',
+      '...Ls.......',
+      '..LLzLL.....',
+      '..LLzLL.....',
+      '..LLLLL.....',
+      '..LLLLL.....',
+      '..LsLsL.....',
+      '..LLLLL.....',
+      '...jjj......',
+      '...j.j......',
+      '..jj.jj.....',
+      '..kk.kk.....',
+    ]
+  },
+  {
+    name: 'Andrew',
+    color: '#3b82f6',
+    palette: {
+      'h': '#8B6914', 'H': '#6B4F10',  // brown hair
+      's': '#F5C4A1', 'S': '#D4A580',  // skin
+      'g': '#1a1a1a',                   // glasses
+      'e': '#3B82F6',                   // blue eyes
+      'b': '#C4A050', 'B': '#A08040',  // beard
+      'n': '#1E3A5A', 'N': '#152D47',  // navy suit
+      't': '#4488CC',                   // tie
+      'w': '#D4D4D4',                   // shirt
+      'k': '#111111',                   // shoes
+    },
+    grid: [
+      '...hhhh.....',
+      '..hhhhhh....',
+      '..hHhhHhh...',
+      '..hsssssh...',
+      '..geg.geg...',
+      '..ggs.sgg...',
+      '..ssssssS...',
+      '..ssbbbs....',
+      '...sbBs.....',
+      '....ss......',
+      '..NwwtN.....',
+      '..NNtNN.....',
+      '.NNNTNNN....',
+      '.NNNNNNN....',
+      '.NNsNsNN....',
+      '..NNNNN.....',
+      '..NN.NN.....',
+      '.kkk.kkk....',
+    ]
+  },
+  {
+    name: 'Sarah',
+    color: '#a855f7',
+    palette: {
+      'f': '#E8C840', 'F': '#D4B430',  // blonde hair
+      's': '#F5C4A1', 'S': '#D4A580',  // skin
+      'g': '#1a1a1a',                   // glasses
+      'e': '#5B8AC4',                   // blue-green eyes
+      'p': '#F0E8D0',                   // pearl earrings
+      'd': '#2A2A2A', 'D': '#1E1E1E',  // dark top
+      'k': '#111111',                   // shoes
+      'r': '#3A2A2A',                   // skirt
+    },
+    grid: [
+      '...ffff.....',
+      '..ffffff....',
+      '.ffFffFff...',
+      '.fssssssf...',
+      '.fgegsegsf..',
+      '.fggssggsf..',
+      '.fsssssssf..',
+      '.fsSsssSfp..',
+      '..fsssf.....',
+      '....ss......',
+      '...dddd.....',
+      '..dddddD....',
+      '..dddddD....',
+      '..ddsddD....',
+      '...rrrr.....',
+      '...rrrr.....',
+      '...r..r.....',
+      '..kk.kk.....',
+    ]
+  },
+  {
+    name: 'James',
+    color: '#f59e0b',
+    palette: {
+      'c': '#DAA520', 'C': '#C49518',  // golden curls
+      's': '#F5C4A1', 'S': '#D4A580',  // skin
+      'e': '#6A8A6A',                   // eyes
+      'x': '#404040', 'X': '#333333',  // charcoal tee
+      'j': '#3A3A50',                   // jeans
+      'k': '#EEEEEE',                   // sneakers
+      'm': '#D4967A',                   // mouth/smile
+    },
+    grid: [
+      '..cCcCc.....',
+      '.cCcCcCc....',
+      '.ccCcCcc....',
+      '.csssssC....',
+      '.ssesSes....',
+      '.sssmsss....',
+      '.ssSSSSs....',
+      '..sssss.....',
+      '...xs.......',
+      's.xxxxx.....',
+      'ssxxxxxs....',
+      '..xxxxx.....',
+      '..xxxxx.....',
+      '..xjjjx.....',
+      '...jjj......',
+      '...j.j......',
+      '..kk.kk.....',
+    ]
+  },
+  {
+    name: 'Charlotte',
+    color: '#ec4899',
+    palette: {
+      'f': '#F0D868', 'F': '#D8C050',  // light blonde
+      't': '#F0D868',                   // ponytail
+      's': '#F5C4A1', 'S': '#D4A580',  // skin
+      'e': '#5B8AC4',                   // eyes
+      'm': '#5EEAD4', 'M': '#4DD4BE',  // mint hoodie
+      'p': '#EC4899',                   // pink sneakers
+      'j': '#4A4A60',                   // leggings
+      'w': '#FFFFFF',                   // socks
+    },
+    grid: [
+      '...fff.f....',
+      '..fffff.f...',
+      '..fFfFf..f..',
+      '..fssssf....',
+      '..sesSes....',
+      '..ssssss....',
+      '..sSSSss....',
+      '...ssss.....',
+      '...ms.......',
+      '..mmmmm.....',
+      '..mMmMm.....',
+      '..mmmmm.....',
+      '..mmmmm.....',
+      '...jjj......',
+      '...j.j......',
+      '..ww.ww.....',
+      '..pp.pp.....',
+    ]
+  },
+  {
+    name: 'Violet',
+    color: '#F5DEB3',
+    palette: {
+      'f': '#F5DEB3', 'F': '#E8D1A0',  // cream fur
+      'c': '#F0C890',                   // fur shadow
+      'n': '#111111',                   // nose
+      'e': '#111111',                   // eyes
+      'p': '#FF69B4',                   // pink collar
+      't': '#FF8DC7',                   // tag
+    },
+    grid: [
+      '..fFfFf.....',
+      '.fffffff....',
+      '.fefcfef....',
+      '.fffnfff....',
+      '.fFfffFf....',
+      '..pptpp.....',
+      '..fffff.....',
+      '.ff...ff....',
+    ]
+  },
+];
+
+function render() {
+  const scene = document.getElementById('scene');
+  
+  family.forEach(char => {
+    const div = document.createElement('div');
+    div.className = 'character';
+    
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    const grid = char.grid;
+    const h = grid.length;
+    const w = grid[0].length;
+    
+    canvas.width = w * SCALE;
+    canvas.height = h * SCALE;
+    canvas.style.width = (w * SCALE) + 'px';
+    canvas.style.height = (h * SCALE) + 'px';
+    
+    for (let y = 0; y < h; y++) {
+      for (let x = 0; x < grid[y].length; x++) {
+        const ch = grid[y][x];
+        if (ch !== '.' && char.palette[ch]) {
+          ctx.fillStyle = char.palette[ch];
+          ctx.fillRect(x * SCALE, y * SCALE, SCALE, SCALE);
+        }
+      }
+    }
+    
+    const label = document.createElement('div');
+    label.className = 'name';
+    label.style.color = char.color;
+    label.textContent = char.name;
+    
+    div.appendChild(canvas);
+    div.appendChild(label);
+    scene.appendChild(div);
+  });
+}
+
+// Add sparkles
+for (let i = 0; i < 30; i++) {
+  const s = document.createElement('div');
+  s.className = 'sparkle';
+  s.style.left = Math.random() * 100 + '%';
+  s.style.top = Math.random() * 100 + '%';
+  s.style.animationDelay = Math.random() * 3 + 's';
+  document.body.appendChild(s);
+}
+
+render();
+</script>
+</body>
+</html>
