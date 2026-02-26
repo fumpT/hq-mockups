@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=3840,height=2160">
-<title>Kitchen TV Dashboard — Layout B v3</title>
+<title>Kitchen TV Dashboard — Layout B v4</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
@@ -21,16 +21,13 @@
     gap: 2.5rem;
     height: 100%;
   }
-
   .sidebar { display: flex; flex-direction: column; gap: 2.5rem; }
-
   .main {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: auto auto 1fr auto auto;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr auto auto auto;
     gap: 2.5rem;
   }
-
   .card {
     background: #1a1a1a;
     border: 1px solid #2a2a2a;
@@ -47,7 +44,6 @@
     color: #666;
     margin-bottom: 1.2rem;
   }
-  .full-width { grid-column: span 2; }
 
   /* ---- SIDEBAR ---- */
   .clock-card { text-align: center; justify-content: center; padding: 3rem 2.5rem; }
@@ -69,27 +65,183 @@
   .chore-done { text-decoration: line-through; color: #555; }
   .chore-summary { font-size: 1.5rem; color: #4ade80; margin-top: 0.8rem; padding-top: 0.8rem; border-top: 1px solid #222; }
 
-  /* ---- CALENDAR ---- */
-  .cal-item { padding: 1.2rem 0; border-bottom: 1px solid #222; }
-  .cal-item:last-child { border: none; }
-  .cal-time { font-size: 1.6rem; color: #f59e0b; font-weight: 500; }
-  .cal-title { font-size: 2.1rem; margin-top: 0.2rem; }
-  .cal-who { font-size: 1.5rem; color: #666; }
-  .cal-next { background: #f59e0b15; border: 1px solid #f59e0b33; border-radius: 1.25rem; padding: 1.25rem; margin-bottom: 0.8rem; }
+  /* ---- FAMILY CALENDAR ---- */
+  .cal-card { flex: 1; min-height: 0; overflow: hidden; }
+
+  /* Up next banner */
+  .cal-next-banner {
+    background: #f59e0b12;
+    border: 1px solid #f59e0b33;
+    border-radius: 1.25rem;
+    padding: 1.5rem 2rem;
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+  }
   .cal-next-label { font-size: 1.3rem; color: #f59e0b; text-transform: uppercase; letter-spacing: 0.1em; }
+  .cal-next-title { font-size: 2.2rem; }
+  .cal-next-time { font-size: 1.6rem; color: #f59e0b; }
+  .cal-next-who { font-size: 1.4rem; color: #888; }
+  .cal-next-info { flex: 1; }
 
-  /* ---- ISOMETRIC HOUSE ---- */
-  .house-card { position: relative; }
-  .house-svg-wrap { flex: 1; display: flex; align-items: center; justify-content: center; min-height: 0; }
-  .house-svg-wrap svg { width: 100%; height: 100%; }
-  .house-legend { display: flex; gap: 2.5rem; margin-top: 1rem; font-size: 1.4rem; color: #888; }
-  .legend-dot { display: inline-block; width: 1.2rem; height: 1.2rem; border-radius: 50%; margin-right: 0.5rem; vertical-align: middle; }
-  .legend-dot.closed { background: #4ade80; }
-  .legend-dot.open { background: #f59e0b; }
+  /* Timeline */
+  .cal-timeline {
+    display: flex;
+    flex: 1;
+    min-height: 0;
+    position: relative;
+  }
 
-  /* ---- LIVE CAMERAS ---- */
+  /* Hour column */
+  .cal-hours {
+    width: 7rem;
+    flex-shrink: 0;
+    position: relative;
+  }
+  .cal-hour-mark {
+    position: absolute;
+    left: 0;
+    font-size: 1.3rem;
+    color: #555;
+    font-family: monospace;
+    transform: translateY(-50%);
+  }
+
+  /* Lanes container */
+  .cal-lanes {
+    flex: 1;
+    display: flex;
+    gap: 1rem;
+    position: relative;
+    min-height: 0;
+  }
+
+  /* Hour grid lines */
+  .cal-gridlines {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+  .cal-gridline {
+    position: absolute;
+    left: 0;
+    right: 0;
+    border-top: 1px solid #1f1f1f;
+  }
+
+  /* Now indicator */
+  .cal-now {
+    position: absolute;
+    left: -1rem;
+    right: 0;
+    display: flex;
+    align-items: center;
+    z-index: 10;
+  }
+  .cal-now-dot {
+    width: 1rem;
+    height: 1rem;
+    background: #ef4444;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .cal-now-line {
+    flex: 1;
+    height: 2px;
+    background: #ef4444;
+  }
+
+  /* Person lane */
+  .cal-lane {
+    flex: 1;
+    position: relative;
+    min-width: 0;
+  }
+  .cal-lane-header {
+    text-align: center;
+    padding-bottom: 0.8rem;
+    border-bottom: 1px solid #2a2a2a;
+    margin-bottom: 0.5rem;
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    background: #1a1a1a;
+  }
+  .cal-lane-avatar {
+    width: 3.5rem;
+    height: 3.5rem;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.6rem;
+    margin-bottom: 0.3rem;
+  }
+  .cal-lane-name {
+    font-size: 1.3rem;
+    color: #888;
+    font-weight: 500;
+  }
+
+  .cal-lane-body {
+    position: relative;
+    flex: 1;
+  }
+
+  /* Event block */
+  .cal-event {
+    position: absolute;
+    left: 0.4rem;
+    right: 0.4rem;
+    border-radius: 0.8rem;
+    padding: 0.6rem 0.8rem;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 3.5rem;
+  }
+  .cal-event-title {
+    font-size: 1.3rem;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .cal-event-time {
+    font-size: 1.1rem;
+    opacity: 0.7;
+    white-space: nowrap;
+  }
+  .cal-event-loc {
+    font-size: 1rem;
+    opacity: 0.5;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* Person colors */
+  .color-andrew { background: #1e3a5f; border-left: 4px solid #3b82f6; }
+  .color-andrew .cal-lane-avatar { background: #1e3a5f; border: 2px solid #3b82f6; }
+  .color-sarah { background: #3b1f4e; border-left: 4px solid #a855f7; }
+  .color-sarah .cal-lane-avatar { background: #3b1f4e; border: 2px solid #a855f7; }
+  .color-will { background: #1a3d2e; border-left: 4px solid #22c55e; }
+  .color-will .cal-lane-avatar { background: #1a3d2e; border: 2px solid #22c55e; }
+  .color-charlotte { background: #4a2532; border-left: 4px solid #ec4899; }
+  .color-charlotte .cal-lane-avatar { background: #4a2532; border: 2px solid #ec4899; }
+  .color-james { background: #3d3019; border-left: 4px solid #f59e0b; }
+  .color-james .cal-lane-avatar { background: #3d3019; border: 2px solid #f59e0b; }
+
+  /* Shared event (spans multiple lanes) */
+  .cal-event-shared {
+    background: #2a2a2a;
+    border-left: 4px solid #888;
+  }
+
+  /* ---- CAMERAS ---- */
   .cameras-row {
-    grid-column: span 2;
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 2.5rem;
@@ -99,8 +251,6 @@
     border: 1px solid #2a2a2a;
     border-radius: 2rem;
     overflow: hidden;
-    display: flex;
-    flex-direction: column;
   }
   .cam-feed {
     aspect-ratio: 16/9;
@@ -109,9 +259,7 @@
     align-items: center;
     justify-content: center;
     position: relative;
-    overflow: hidden;
   }
-  /* Simulated camera noise/feed */
   .cam-feed::before {
     content: '';
     position: absolute;
@@ -123,63 +271,34 @@
   }
   .cam-feed-icon { font-size: 4rem; color: #333; z-index: 1; }
   .cam-live-dot {
-    position: absolute;
-    top: 1.2rem;
-    left: 1.5rem;
-    display: flex;
-    align-items: center;
-    gap: 0.6rem;
-    z-index: 2;
+    position: absolute; top: 1.2rem; left: 1.5rem;
+    display: flex; align-items: center; gap: 0.6rem; z-index: 2;
   }
   .cam-live-indicator {
-    width: 1rem;
-    height: 1rem;
-    background: #ef4444;
-    border-radius: 50%;
+    width: 1rem; height: 1rem; background: #ef4444; border-radius: 50%;
     animation: cam-pulse 2s ease-in-out infinite;
   }
-  @keyframes cam-pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.4; }
-  }
-  .cam-live-text { font-size: 1.2rem; color: #ef4444; font-weight: 600; letter-spacing: 0.05em; }
-  .cam-timestamp {
-    position: absolute;
-    bottom: 1rem;
-    right: 1.2rem;
-    font-size: 1.1rem;
-    color: #666;
-    font-family: monospace;
-    z-index: 2;
-  }
-  .cam-info {
-    padding: 1.2rem 1.5rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
+  @keyframes cam-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+  .cam-live-text { font-size: 1.2rem; color: #ef4444; font-weight: 600; }
+  .cam-timestamp { position: absolute; bottom: 1rem; right: 1.2rem; font-size: 1.1rem; color: #666; font-family: monospace; z-index: 2; }
+  .cam-info { padding: 1.2rem 1.5rem; display: flex; align-items: center; justify-content: space-between; }
   .cam-name { font-size: 1.6rem; font-weight: 500; }
   .cam-status { font-size: 1.2rem; color: #4ade80; }
 
   /* ---- SCRYPTED EVENTS ---- */
-  .events-card {
-    grid-column: span 2;
-  }
   .events-strip {
     display: flex;
     gap: 2rem;
     overflow-x: auto;
     flex: 1;
-    min-height: 0;
   }
   .event-thumb {
     flex-shrink: 0;
-    width: 22rem;
+    width: 20rem;
     background: #111;
     border-radius: 1.25rem;
     overflow: hidden;
     border: 1px solid #2a2a2a;
-    position: relative;
   }
   .event-snap {
     aspect-ratio: 16/9;
@@ -191,35 +310,25 @@
   }
   .event-snap::before {
     content: '';
-    position: absolute;
-    inset: 0;
+    position: absolute; inset: 0;
     background: radial-gradient(ellipse at 50% 50%, #1a1a2e 0%, transparent 70%);
     opacity: 0.4;
   }
   .event-snap-icon { font-size: 3rem; color: #444; z-index: 1; }
   .event-badge {
-    position: absolute;
-    top: 0.8rem;
-    left: 0.8rem;
-    padding: 0.3rem 0.8rem;
-    border-radius: 0.6rem;
-    font-size: 1.1rem;
-    font-weight: 600;
-    letter-spacing: 0.03em;
-    z-index: 2;
+    position: absolute; top: 0.8rem; left: 0.8rem;
+    padding: 0.3rem 0.8rem; border-radius: 0.6rem;
+    font-size: 1.1rem; font-weight: 600; z-index: 2;
   }
   .event-badge.person { background: #7c3aed88; color: #c4b5fd; border: 1px solid #7c3aed55; }
   .event-badge.motion { background: #0369a188; color: #7dd3fc; border: 1px solid #0369a155; }
   .event-badge.vehicle { background: #b4530088; color: #fdba74; border: 1px solid #b4530055; }
   .event-badge.animal { background: #15803d88; color: #86efac; border: 1px solid #15803d55; }
-  .event-info {
-    padding: 0.8rem 1rem;
-  }
+  .event-info { padding: 0.8rem 1rem; }
   .event-camera { font-size: 1.3rem; font-weight: 500; }
   .event-time { font-size: 1.1rem; color: #666; margin-top: 0.2rem; }
 
   /* ---- APPLIANCES BAR ---- */
-  .appliances-bar { grid-column: span 2; }
   .appliances-inner { display: flex; align-items: center; gap: 3.5rem; height: 100%; }
   .appliance { display: flex; align-items: center; gap: 1.2rem; }
   .appliance-icon { font-size: 3rem; }
@@ -228,20 +337,17 @@
   .appliance-status { font-size: 2rem; font-weight: 300; }
   .appliance-status.done { color: #4ade80; }
   .appliance-divider { width: 1px; height: 4rem; background: #2a2a2a; }
-
   .washer-done-badge { display: flex; align-items: center; gap: 0.8rem; }
   .done-ping { position: relative; width: 1.6rem; height: 1.6rem; }
   .done-ping-dot { width: 1.6rem; height: 1.6rem; background: #4ade80; border-radius: 50%; position: absolute; }
   .done-ping-ring { width: 1.6rem; height: 1.6rem; border: 2px solid #4ade80; border-radius: 50%; position: absolute; animation: ping-ring 1.5s ease-out infinite; }
   @keyframes ping-ring { 0% { transform: scale(1); opacity: 0.8; } 100% { transform: scale(2.5); opacity: 0; } }
-
   .status-item { display: flex; align-items: center; gap: 1.2rem; }
   .status-icon { font-size: 3rem; }
   .status-info { display: flex; flex-direction: column; }
   .status-name { font-size: 1.4rem; color: #888; text-transform: uppercase; letter-spacing: 0.05em; }
   .status-state { font-size: 2rem; font-weight: 300; }
   .status-state.closed { color: #4ade80; }
-  .status-state.open { color: #f59e0b; }
 
   /* ---- ANNOUNCEMENTS ---- */
   .announce-bar { display: flex; align-items: center; gap: 2.5rem; height: 100%; }
@@ -260,7 +366,6 @@
       <div class="clock-date">Wednesday, 26 February</div>
       <div class="clock-greeting">Good morning ☀️</div>
     </div>
-
     <div class="card">
       <div class="card-label">Jerrabomberra</div>
       <div class="weather-row">
@@ -269,7 +374,6 @@
       </div>
       <div class="weather-details">Partly cloudy<br>High 24° · Low 14° · UV 6</div>
     </div>
-
     <div class="card chores-card">
       <div class="card-label">Chores</div>
       <div class="chore-list">
@@ -287,68 +391,180 @@
   <!-- ========== MAIN ========== -->
   <div class="main">
 
-    <!-- Row 1: Calendar + Isometric House -->
-    <div class="card">
-      <div class="card-label">Today</div>
-      <div class="cal-next">
-        <div class="cal-next-label">Up next</div>
-        <div class="cal-title" style="margin-top:0.4rem;">Charlotte — piano</div>
-        <div class="cal-time">3:15 PM — in 7 hours</div>
-      </div>
-      <div class="cal-item">
-        <div class="cal-time">5:00 PM</div>
-        <div class="cal-title">James — basketball</div>
-        <div class="cal-who">@ Queanbeyan PCYC</div>
-      </div>
-      <div class="cal-item">
-        <div class="cal-time">6:30 PM</div>
-        <div class="cal-title">Dinner — taco night 🌮</div>
-      </div>
-    </div>
+    <!-- Row 1: Family Calendar (full width, takes most space) -->
+    <div class="card cal-card">
+      <div class="card-label">Today — Family Schedule</div>
 
-    <div class="card house-card">
-      <div class="card-label">Home</div>
-      <div class="house-svg-wrap">
-        <svg viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg">
-          <ellipse cx="400" cy="520" rx="340" ry="50" fill="#111" opacity="0.5"/>
-          <g transform="translate(400, 380)">
-            <path d="M0,0 L-240,120 L-240,-80 L0,-200 Z" fill="#252525" stroke="#333" stroke-width="1.5"/>
-            <path d="M0,0 L240,120 L240,-80 L0,-200 Z" fill="#1e1e1e" stroke="#333" stroke-width="1.5"/>
-            <path d="M0,-200 L-240,-80 L0,40 L240,-80 Z" fill="#2a2a2a" stroke="#333" stroke-width="1.5"/>
-            <path d="M0,-310 L-260,-100 L0,10 L260,-100 Z" fill="#333" stroke="#444" stroke-width="2"/>
-            <path d="M0,-310 L-260,-100 L-240,-80 L0,-200 Z" fill="#2d2d2d" stroke="#444" stroke-width="1"/>
-            <path d="M0,-310 L260,-100 L240,-80 L0,-200 Z" fill="#282828" stroke="#444" stroke-width="1"/>
-            <!-- Front door — closed -->
-            <path d="M-100,20 L-100,-60 L-60,-80 L-60,0 Z" fill="#4ade8022" stroke="#4ade80" stroke-width="2"/>
-            <text x="-82" y="-15" fill="#4ade80" font-size="14" text-anchor="middle" font-family="sans-serif">CLOSED</text>
-            <circle cx="-67" cy="-20" r="3" fill="#4ade80"/>
-            <!-- Kitchen window — closed -->
-            <path d="M-190,50 L-190,10 L-150,-10 L-150,30 Z" fill="#4ade8022" stroke="#4ade80" stroke-width="2"/>
-            <text x="-172" y="28" fill="#4ade80" font-size="11" text-anchor="middle" font-family="sans-serif">CLOSED</text>
-            <!-- Garage roller — closed -->
-            <path d="M40,10 L40,-70 L160,-10 L160,70 Z" fill="#4ade8022" stroke="#4ade80" stroke-width="2"/>
-            <line x1="50" y1="-50" x2="150" y2="10" stroke="#4ade80" stroke-width="0.5" opacity="0.3"/>
-            <line x1="50" y1="-35" x2="150" y2="25" stroke="#4ade80" stroke-width="0.5" opacity="0.3"/>
-            <line x1="50" y1="-20" x2="150" y2="40" stroke="#4ade80" stroke-width="0.5" opacity="0.3"/>
-            <line x1="50" y1="-5" x2="150" y2="55" stroke="#4ade80" stroke-width="0.5" opacity="0.3"/>
-            <text x="100" y="20" fill="#4ade80" font-size="14" text-anchor="middle" font-family="sans-serif">CLOSED</text>
-            <!-- Bedroom window — closed -->
-            <path d="M180,80 L180,40 L220,60 L220,100 Z" fill="#4ade8022" stroke="#4ade80" stroke-width="2"/>
-            <text x="200" y="78" fill="#4ade80" font-size="10" text-anchor="middle" font-family="sans-serif">CLOSED</text>
-            <!-- Back door — closed -->
-            <path d="M200,90 L200,20 L235,37 L235,107 Z" fill="#4ade8022" stroke="#4ade80" stroke-width="2"/>
-            <text x="218" y="72" fill="#4ade80" font-size="11" text-anchor="middle" font-family="sans-serif">CLOSED</text>
-            <!-- Labels -->
-            <text x="-140" y="-40" fill="#555" font-size="12" text-anchor="middle" font-family="sans-serif">Kitchen</text>
-            <text x="-60" y="-50" fill="#555" font-size="12" text-anchor="middle" font-family="sans-serif">Living</text>
-            <text x="100" y="-45" fill="#555" font-size="12" text-anchor="middle" font-family="sans-serif">Garage</text>
-            <text x="200" y="10" fill="#555" font-size="12" text-anchor="middle" font-family="sans-serif">Bed</text>
-          </g>
-        </svg>
+      <!-- Up next banner -->
+      <div class="cal-next-banner">
+        <div style="font-size:3rem;">⏰</div>
+        <div class="cal-next-info">
+          <div class="cal-next-label">Up next</div>
+          <div class="cal-next-title">Charlotte — piano</div>
+          <div class="cal-next-time">3:15 PM — in 7 hours</div>
+          <div class="cal-next-who">@ Weston Creek</div>
+        </div>
       </div>
-      <div class="house-legend">
-        <span><span class="legend-dot closed"></span> Secured</span>
-        <span><span class="legend-dot open"></span> Open</span>
+
+      <!-- Stacked timeline: 7AM–9PM, 5 lanes -->
+      <div class="cal-timeline" style="flex:1; min-height:0;">
+        <!-- Hour labels -->
+        <div class="cal-hours">
+          <div class="cal-hour-mark" style="top: 0%;">7 AM</div>
+          <div class="cal-hour-mark" style="top: 7.14%;">8 AM</div>
+          <div class="cal-hour-mark" style="top: 14.28%;">9 AM</div>
+          <div class="cal-hour-mark" style="top: 21.42%;">10 AM</div>
+          <div class="cal-hour-mark" style="top: 28.57%;">11 AM</div>
+          <div class="cal-hour-mark" style="top: 35.71%;">12 PM</div>
+          <div class="cal-hour-mark" style="top: 42.85%;">1 PM</div>
+          <div class="cal-hour-mark" style="top: 50%;">2 PM</div>
+          <div class="cal-hour-mark" style="top: 57.14%;">3 PM</div>
+          <div class="cal-hour-mark" style="top: 64.28%;">4 PM</div>
+          <div class="cal-hour-mark" style="top: 71.42%;">5 PM</div>
+          <div class="cal-hour-mark" style="top: 78.57%;">6 PM</div>
+          <div class="cal-hour-mark" style="top: 85.71%;">7 PM</div>
+          <div class="cal-hour-mark" style="top: 92.85%;">8 PM</div>
+        </div>
+
+        <div class="cal-lanes">
+          <!-- Grid lines -->
+          <div class="cal-gridlines">
+            <div class="cal-gridline" style="top: 0%;"></div>
+            <div class="cal-gridline" style="top: 7.14%;"></div>
+            <div class="cal-gridline" style="top: 14.28%;"></div>
+            <div class="cal-gridline" style="top: 21.42%;"></div>
+            <div class="cal-gridline" style="top: 28.57%;"></div>
+            <div class="cal-gridline" style="top: 35.71%;"></div>
+            <div class="cal-gridline" style="top: 42.85%;"></div>
+            <div class="cal-gridline" style="top: 50%;"></div>
+            <div class="cal-gridline" style="top: 57.14%;"></div>
+            <div class="cal-gridline" style="top: 64.28%;"></div>
+            <div class="cal-gridline" style="top: 71.42%;"></div>
+            <div class="cal-gridline" style="top: 78.57%;"></div>
+            <div class="cal-gridline" style="top: 85.71%;"></div>
+            <div class="cal-gridline" style="top: 92.85%;"></div>
+          </div>
+
+          <!-- Now line (8:14 AM → ~8.23% from top) -->
+          <div class="cal-now" style="top: 8.8%;">
+            <div class="cal-now-dot"></div>
+            <div class="cal-now-line"></div>
+          </div>
+
+          <!-- Andrew -->
+          <div class="cal-lane">
+            <div class="cal-lane-header">
+              <div class="cal-lane-avatar color-andrew">👨</div>
+              <div class="cal-lane-name">Andrew</div>
+            </div>
+            <div class="cal-lane-body">
+              <!-- School drop-off 8:15–8:45 → 8.9% to 12.5% -->
+              <div class="cal-event color-andrew" style="top: 8.9%; height: 3.6%;">
+                <div class="cal-event-title">School drop-off</div>
+              </div>
+              <!-- Work 9:00–17:00 → 14.28% to 71.42% -->
+              <div class="cal-event color-andrew" style="top: 14.28%; height: 57.14%;">
+                <div class="cal-event-title">Work</div>
+                <div class="cal-event-time">9 AM – 5 PM</div>
+                <div class="cal-event-loc">Cloudflare (remote)</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Sarah -->
+          <div class="cal-lane">
+            <div class="cal-lane-header">
+              <div class="cal-lane-avatar color-sarah">👩</div>
+              <div class="cal-lane-name">Sarah</div>
+            </div>
+            <div class="cal-lane-body">
+              <!-- Coffee catch-up 10:00–11:00 → 21.42% to 28.57% -->
+              <div class="cal-event color-sarah" style="top: 21.42%; height: 7.14%;">
+                <div class="cal-event-title">Coffee with Mel</div>
+                <div class="cal-event-time">10 – 11 AM</div>
+                <div class="cal-event-loc">@ Milk Bar, Kingston</div>
+              </div>
+              <!-- Charlotte piano pickup 3:15–4:15 -->
+              <div class="cal-event color-sarah" style="top: 58.9%; height: 7.14%;">
+                <div class="cal-event-title">Charlotte → piano</div>
+                <div class="cal-event-time">3:15 – 4:15 PM</div>
+                <div class="cal-event-loc">@ Weston Creek</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Will -->
+          <div class="cal-lane">
+            <div class="cal-lane-header">
+              <div class="cal-lane-avatar color-will">🧒</div>
+              <div class="cal-lane-name">Will</div>
+            </div>
+            <div class="cal-lane-body">
+              <!-- School 8:30–3:00 → 10.7% to 57.14% -->
+              <div class="cal-event color-will" style="top: 10.7%; height: 46.4%;">
+                <div class="cal-event-title">School</div>
+                <div class="cal-event-time">8:30 – 3 PM</div>
+              </div>
+              <!-- Soccer training 4:30–5:30 → 64.28% to 71.42% -->
+              <div class="cal-event color-will" style="top: 64.28%; height: 7.14%;">
+                <div class="cal-event-title">Soccer training</div>
+                <div class="cal-event-time">4:30 – 5:30 PM</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Charlotte -->
+          <div class="cal-lane">
+            <div class="cal-lane-header">
+              <div class="cal-lane-avatar color-charlotte">👧</div>
+              <div class="cal-lane-name">Charlotte</div>
+            </div>
+            <div class="cal-lane-body">
+              <!-- School -->
+              <div class="cal-event color-charlotte" style="top: 10.7%; height: 46.4%;">
+                <div class="cal-event-title">School</div>
+                <div class="cal-event-time">8:30 – 3 PM</div>
+              </div>
+              <!-- Piano 3:15–4:00 -->
+              <div class="cal-event color-charlotte" style="top: 58.9%; height: 5.35%;">
+                <div class="cal-event-title">Piano lesson</div>
+                <div class="cal-event-time">3:15 – 4 PM</div>
+                <div class="cal-event-loc">@ Weston Creek</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- James -->
+          <div class="cal-lane">
+            <div class="cal-lane-header">
+              <div class="cal-lane-avatar color-james">👦</div>
+              <div class="cal-lane-name">James</div>
+            </div>
+            <div class="cal-lane-body">
+              <!-- School -->
+              <div class="cal-event color-james" style="top: 10.7%; height: 46.4%;">
+                <div class="cal-event-title">School</div>
+                <div class="cal-event-time">8:30 – 3 PM</div>
+              </div>
+              <!-- Basketball 5:00–6:00 -->
+              <div class="cal-event color-james" style="top: 71.42%; height: 7.14%;">
+                <div class="cal-event-title">Basketball</div>
+                <div class="cal-event-time">5 – 6 PM</div>
+                <div class="cal-event-loc">@ Queanbeyan PCYC</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Family dinner banner -->
+      <div style="margin-top:1.5rem; padding:1.2rem 2rem; background:#2a2a2a; border-radius:1rem; display:flex; align-items:center; gap:1.5rem;">
+        <span style="font-size:2.5rem;">🌮</span>
+        <div>
+          <div style="font-size:1.8rem; font-weight:500;">Taco Night</div>
+          <div style="font-size:1.4rem; color:#888;">6:30 PM — whole family</div>
+        </div>
       </div>
     </div>
 
@@ -360,10 +576,7 @@
           <div class="cam-feed-icon">🔔</div>
           <div class="cam-timestamp">08:14:32</div>
         </div>
-        <div class="cam-info">
-          <span class="cam-name">Doorbell</span>
-          <span class="cam-status">● Online</span>
-        </div>
+        <div class="cam-info"><span class="cam-name">Doorbell</span><span class="cam-status">● Online</span></div>
       </div>
       <div class="cam-card">
         <div class="cam-feed">
@@ -371,10 +584,7 @@
           <div class="cam-feed-icon">🚪</div>
           <div class="cam-timestamp">08:14:32</div>
         </div>
-        <div class="cam-info">
-          <span class="cam-name">Front Door</span>
-          <span class="cam-status">● Online</span>
-        </div>
+        <div class="cam-info"><span class="cam-name">Front Door</span><span class="cam-status">● Online</span></div>
       </div>
       <div class="cam-card">
         <div class="cam-feed">
@@ -382,10 +592,7 @@
           <div class="cam-feed-icon">🏡</div>
           <div class="cam-timestamp">08:14:31</div>
         </div>
-        <div class="cam-info">
-          <span class="cam-name">Back Door</span>
-          <span class="cam-status">● Online</span>
-        </div>
+        <div class="cam-info"><span class="cam-name">Back Door</span><span class="cam-status">● Online</span></div>
       </div>
       <div class="cam-card">
         <div class="cam-feed">
@@ -393,72 +600,39 @@
           <div class="cam-feed-icon">🚗</div>
           <div class="cam-timestamp">08:14:30</div>
         </div>
-        <div class="cam-info">
-          <span class="cam-name">Garage</span>
-          <span class="cam-status">● Online</span>
-        </div>
+        <div class="cam-info"><span class="cam-name">Garage</span><span class="cam-status">● Online</span></div>
       </div>
     </div>
 
-    <!-- Row 3: Scrypted Recent Events -->
-    <div class="card events-card full-width">
+    <!-- Row 3: Scrypted Events + Appliances -->
+    <div class="card">
       <div class="card-label">Recent Activity</div>
       <div class="events-strip">
         <div class="event-thumb">
-          <div class="event-snap">
-            <div class="event-badge person">👤 Person</div>
-            <div class="event-snap-icon">📸</div>
-          </div>
-          <div class="event-info">
-            <div class="event-camera">Front Door</div>
-            <div class="event-time">8:02 AM · 12 min ago</div>
-          </div>
+          <div class="event-snap"><div class="event-badge person">👤 Person</div><div class="event-snap-icon">📸</div></div>
+          <div class="event-info"><div class="event-camera">Front Door</div><div class="event-time">8:02 AM · 12 min ago</div></div>
         </div>
         <div class="event-thumb">
-          <div class="event-snap">
-            <div class="event-badge vehicle">🚗 Vehicle</div>
-            <div class="event-snap-icon">📸</div>
-          </div>
-          <div class="event-info">
-            <div class="event-camera">Garage</div>
-            <div class="event-time">7:48 AM · 26 min ago</div>
-          </div>
+          <div class="event-snap"><div class="event-badge vehicle">🚗 Vehicle</div><div class="event-snap-icon">📸</div></div>
+          <div class="event-info"><div class="event-camera">Garage</div><div class="event-time">7:48 AM · 26 min ago</div></div>
         </div>
         <div class="event-thumb">
-          <div class="event-snap">
-            <div class="event-badge person">👤 Person</div>
-            <div class="event-snap-icon">📸</div>
-          </div>
-          <div class="event-info">
-            <div class="event-camera">Doorbell</div>
-            <div class="event-time">7:41 AM · 33 min ago</div>
-          </div>
+          <div class="event-snap"><div class="event-badge person">👤 Person</div><div class="event-snap-icon">📸</div></div>
+          <div class="event-info"><div class="event-camera">Doorbell</div><div class="event-time">7:41 AM · 33 min ago</div></div>
         </div>
         <div class="event-thumb">
-          <div class="event-snap">
-            <div class="event-badge animal">🐾 Animal</div>
-            <div class="event-snap-icon">📸</div>
-          </div>
-          <div class="event-info">
-            <div class="event-camera">Back Door</div>
-            <div class="event-time">7:22 AM · 52 min ago</div>
-          </div>
+          <div class="event-snap"><div class="event-badge animal">🐾 Animal</div><div class="event-snap-icon">📸</div></div>
+          <div class="event-info"><div class="event-camera">Back Door</div><div class="event-time">7:22 AM · 52 min ago</div></div>
         </div>
         <div class="event-thumb">
-          <div class="event-snap">
-            <div class="event-badge motion">💨 Motion</div>
-            <div class="event-snap-icon">📸</div>
-          </div>
-          <div class="event-info">
-            <div class="event-camera">Front Door</div>
-            <div class="event-time">6:55 AM · 1h 19m ago</div>
-          </div>
+          <div class="event-snap"><div class="event-badge motion">💨 Motion</div><div class="event-snap-icon">📸</div></div>
+          <div class="event-info"><div class="event-camera">Front Door</div><div class="event-time">6:55 AM · 1h 19m ago</div></div>
         </div>
       </div>
     </div>
 
-    <!-- Row 4: Appliances + Status -->
-    <div class="card appliances-bar full-width">
+    <!-- Row 4: Appliances + Status + Announcements -->
+    <div class="card">
       <div class="appliances-inner">
         <div class="appliance">
           <div class="appliance-icon">👕</div>
@@ -478,12 +652,7 @@
             <div class="status-state closed">● All Secured</div>
           </div>
         </div>
-      </div>
-    </div>
-
-    <!-- Row 5: Announcements -->
-    <div class="card full-width">
-      <div class="announce-bar">
+        <div class="appliance-divider"></div>
         <div class="announce-icon">📢</div>
         <div class="announce-text">Bins go out tonight — it's recycling week</div>
         <div class="announce-steve">🦞 Steve is online</div>
