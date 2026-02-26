@@ -15,7 +15,6 @@
     padding: 3rem;
   }
 
-  /* Full page: 2-column — content + right rail */
   .page {
     display: grid;
     grid-template-columns: 1fr 380px;
@@ -23,7 +22,6 @@
     height: 100%;
   }
 
-  /* Left content area: rows */
   .content {
     display: grid;
     grid-template-rows: 1fr auto auto;
@@ -31,7 +29,6 @@
     min-height: 0;
   }
 
-  /* Top area: 2-column (sidebar + center) */
   .top {
     display: grid;
     grid-template-columns: 780px 1fr;
@@ -39,13 +36,8 @@
     min-height: 0;
   }
 
-  /* Left sidebar: 3 stacked cards */
   .left { display: flex; flex-direction: column; gap: 2.5rem; }
-
-  /* Center: calendar + cameras stacked */
   .center { display: flex; flex-direction: column; gap: 2.5rem; min-height: 0; }
-
-  /* Right rail: full height of page */
   .right { display: flex; flex-direction: column; }
 
   .card {
@@ -89,16 +81,6 @@
 
   /* ---- CALENDAR ---- */
   .cal-card { flex: 1; min-height: 0; }
-  .cal-body {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 3rem;
-    flex: 1;
-    min-height: 0;
-  }
-  .cal-left { display: flex; flex-direction: column; min-height: 0; }
-  .cal-right { display: flex; flex-direction: column; gap: 2rem; min-height: 0; }
-
   .cal-next {
     background: #f59e0b15;
     border: 1px solid #f59e0b33;
@@ -132,21 +114,6 @@
   .cal-who { font-size: 1.7rem; color: #666; }
   .cal-person-name { font-size: 1.4rem; font-weight: 500; }
 
-  /* Tomorrow section */
-  .cal-tomorrow-header {
-    font-size: 1.5rem;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: #555;
-    margin-top: 1.5rem;
-    padding-top: 1.5rem;
-    border-top: 2px solid #222;
-    margin-bottom: 0.5rem;
-  }
-  .cal-item.tomorrow .cal-time { color: #666; }
-  .cal-item.tomorrow .cal-title { color: #aaa; }
-
-  /* Person colours */
   .dot-andrew { background: #3b82f6; }
   .dot-sarah { background: #a855f7; }
   .dot-will { background: #22c55e; }
@@ -160,7 +127,6 @@
   .name-james { color: #f59e0b; }
   .name-family { color: #888; }
 
-  /* Calendar legend */
   .cal-legend {
     display: flex;
     gap: 2.5rem;
@@ -168,42 +134,6 @@
   }
   .cal-legend-item { display: flex; align-items: center; gap: 0.6rem; font-size: 1.3rem; color: #888; }
   .cal-legend-dot { width: 1.1rem; height: 1.1rem; border-radius: 50%; }
-
-  /* ---- WHERE IS EVERYONE ---- */
-  .where-card {
-    background: #151515;
-    border: 1px solid #222;
-    border-radius: 1.5rem;
-    padding: 1.8rem;
-    display: flex;
-    align-items: center;
-    gap: 1.5rem;
-  }
-  .where-avatar {
-    width: 4.5rem;
-    height: 4.5rem;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 2rem;
-    flex-shrink: 0;
-  }
-  .where-info { flex: 1; }
-  .where-name { font-size: 1.6rem; font-weight: 600; }
-  .where-location { font-size: 1.8rem; margin-top: 0.2rem; }
-  .where-since { font-size: 1.2rem; color: #555; margin-top: 0.1rem; }
-  .where-avatar.av-andrew { background: #1e3a5f; border: 3px solid #3b82f6; }
-  .where-avatar.av-sarah { background: #3b1f4e; border: 3px solid #a855f7; }
-  .where-avatar.av-will { background: #1a3d2e; border: 3px solid #22c55e; }
-  .where-avatar.av-charlotte { background: #4a2532; border: 3px solid #ec4899; }
-  .where-avatar.av-james { background: #3d3019; border: 3px solid #f59e0b; }
-  .right-section-label {
-    font-size: 1.5rem;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: #555;
-  }
 
   /* ---- CAMERAS ---- */
   .cameras-row {
@@ -288,7 +218,7 @@
   .events-list {
     display: flex;
     flex-direction: column;
-    gap: 2rem;
+    gap: 1.5rem;
     overflow-y: auto;
     flex: 1;
   }
@@ -312,31 +242,27 @@
     background: radial-gradient(ellipse at 50% 50%, #1a1a2e 0%, transparent 70%);
     opacity: 0.4;
   }
-  .event-snap-icon { font-size: 3rem; color: #444; z-index: 1; }
+  .event-snap-icon { font-size: 2.5rem; color: #444; z-index: 1; }
   .event-badge {
-    position: absolute; top: 0.8rem; left: 0.8rem;
-    padding: 0.3rem 0.8rem; border-radius: 0.6rem;
-    font-size: 1.2rem; font-weight: 600; z-index: 2;
+    position: absolute; top: 0.6rem; left: 0.6rem;
+    padding: 0.25rem 0.6rem; border-radius: 0.5rem;
+    font-size: 1rem; font-weight: 600; z-index: 2;
   }
   .event-badge.person { background: #7c3aed88; color: #c4b5fd; border: 1px solid #7c3aed55; }
   .event-badge.motion { background: #0369a188; color: #7dd3fc; border: 1px solid #0369a155; }
   .event-badge.vehicle { background: #b4530088; color: #fdba74; border: 1px solid #b4530055; }
   .event-badge.animal { background: #15803d88; color: #86efac; border: 1px solid #15803d55; }
-  .event-info { padding: 0.8rem 1rem; }
-  .event-camera { font-size: 1.4rem; font-weight: 500; }
-  .event-time { font-size: 1.2rem; color: #666; margin-top: 0.2rem; }
+  .event-info { padding: 0.5rem 0.8rem; }
+  .event-camera { font-size: 1.2rem; font-weight: 500; }
+  .event-time { font-size: 1rem; color: #666; margin-top: 0.1rem; }
 </style>
 </head>
 <body>
 <div class="page">
 
-  <!-- ========== LEFT CONTENT (rows: top, status, announce) ========== -->
   <div class="content">
-
-  <!-- Top area: sidebar + center -->
   <div class="top">
 
-    <!-- Left sidebar -->
     <div class="left">
       <div class="card clock-card">
         <div class="clock-time">7:42</div>
@@ -365,9 +291,10 @@
       </div>
     </div>
 
-    <!-- Center: calendar + cameras -->
     <div class="center">
       <div class="card cal-card">
+        <div class="card-label">Today</div>
+
         <div class="cal-legend">
           <div class="cal-legend-item"><div class="cal-legend-dot dot-andrew"></div>Andrew</div>
           <div class="cal-legend-item"><div class="cal-legend-dot dot-sarah"></div>Sarah</div>
@@ -376,154 +303,77 @@
           <div class="cal-legend-item"><div class="cal-legend-dot dot-james"></div>James</div>
         </div>
 
-        <div class="cal-body">
-          <!-- LEFT: Today + Tomorrow -->
-          <div class="cal-left">
-            <div class="card-label">Today</div>
+        <div class="cal-next">
+          <div class="cal-next-label">Up next</div>
+          <div class="cal-next-title">School drop-off</div>
+          <div class="cal-next-time">8:30 AM — in 48 min</div>
+        </div>
 
-            <div class="cal-next">
-              <div class="cal-next-label">Up next</div>
-              <div class="cal-next-title">School drop-off</div>
-              <div class="cal-next-time">8:30 AM — in 48 min</div>
-            </div>
-
-            <div class="cal-items">
-              <div class="cal-item">
-                <div class="cal-person-dot dot-andrew"></div>
-                <div class="cal-item-content">
-                  <div class="cal-person-name name-andrew">Andrew</div>
-                  <div class="cal-time">9:00 AM – 5:00 PM</div>
-                  <div class="cal-title">Work</div>
-                  <div class="cal-who">Cloudflare (remote)</div>
-                </div>
-              </div>
-              <div class="cal-item">
-                <div class="cal-person-dot dot-sarah"></div>
-                <div class="cal-item-content">
-                  <div class="cal-person-name name-sarah">Sarah</div>
-                  <div class="cal-time">10:00 – 11:00 AM</div>
-                  <div class="cal-title">☕ Coffee with Mel</div>
-                  <div class="cal-who">@ Milk Bar, Kingston</div>
-                </div>
-              </div>
-              <div class="cal-item">
-                <div class="cal-person-dot dot-charlotte"></div>
-                <div class="cal-item-content">
-                  <div class="cal-person-name name-charlotte">Charlotte</div>
-                  <div class="cal-time">3:15 PM</div>
-                  <div class="cal-title">🎹 Piano</div>
-                  <div class="cal-who">@ Weston Creek</div>
-                </div>
-              </div>
-              <div class="cal-item">
-                <div class="cal-person-dot dot-sarah"></div>
-                <div class="cal-item-content">
-                  <div class="cal-person-name name-sarah">Sarah</div>
-                  <div class="cal-time">3:15 – 4:15 PM</div>
-                  <div class="cal-title">🚗 Charlotte → piano</div>
-                </div>
-              </div>
-              <div class="cal-item">
-                <div class="cal-person-dot dot-will"></div>
-                <div class="cal-item-content">
-                  <div class="cal-person-name name-will">Will</div>
-                  <div class="cal-time">4:30 PM</div>
-                  <div class="cal-title">⚽ Soccer training</div>
-                </div>
-              </div>
-              <div class="cal-item">
-                <div class="cal-person-dot dot-james"></div>
-                <div class="cal-item-content">
-                  <div class="cal-person-name name-james">James</div>
-                  <div class="cal-time">5:00 PM</div>
-                  <div class="cal-title">🏀 Basketball</div>
-                  <div class="cal-who">@ Queanbeyan PCYC</div>
-                </div>
-              </div>
-              <div class="cal-item">
-                <div class="cal-person-dot dot-family"></div>
-                <div class="cal-item-content">
-                  <div class="cal-person-name name-family">Family</div>
-                  <div class="cal-time">6:30 PM</div>
-                  <div class="cal-title">Dinner — taco night 🌮</div>
-                </div>
-              </div>
-
-              <!-- Tomorrow preview -->
-              <div class="cal-tomorrow-header">Tomorrow — Thursday</div>
-              <div class="cal-item tomorrow">
-                <div class="cal-person-dot dot-sarah"></div>
-                <div class="cal-item-content">
-                  <div class="cal-person-name name-sarah">Sarah</div>
-                  <div class="cal-time">2:00 PM</div>
-                  <div class="cal-title">🩺 Physio</div>
-                  <div class="cal-who">@ Queanbeyan</div>
-                </div>
-              </div>
-              <div class="cal-item tomorrow">
-                <div class="cal-person-dot dot-james"></div>
-                <div class="cal-item-content">
-                  <div class="cal-person-name name-james">James</div>
-                  <div class="cal-time">4:00 PM</div>
-                  <div class="cal-title">📚 Tutoring</div>
-                </div>
-              </div>
+        <div class="cal-items">
+          <div class="cal-item">
+            <div class="cal-person-dot dot-andrew"></div>
+            <div class="cal-item-content">
+              <div class="cal-person-name name-andrew">Andrew</div>
+              <div class="cal-time">9:00 AM – 5:00 PM</div>
+              <div class="cal-title">Work</div>
+              <div class="cal-who">Cloudflare (remote)</div>
             </div>
           </div>
-
-          <!-- RIGHT: Where is everyone -->
-          <div class="cal-right">
-            <div class="right-section-label">Right Now</div>
-
-            <div class="where-card">
-              <div class="where-avatar av-andrew">👨</div>
-              <div class="where-info">
-                <div class="where-name name-andrew">Andrew</div>
-                <div class="where-location">🏠 Home</div>
-                <div class="where-since">Since 7:00 AM</div>
-              </div>
+          <div class="cal-item">
+            <div class="cal-person-dot dot-sarah"></div>
+            <div class="cal-item-content">
+              <div class="cal-person-name name-sarah">Sarah</div>
+              <div class="cal-time">10:00 – 11:00 AM</div>
+              <div class="cal-title">☕ Coffee with Mel</div>
+              <div class="cal-who">@ Milk Bar, Kingston</div>
             </div>
-
-            <div class="where-card">
-              <div class="where-avatar av-sarah">👩</div>
-              <div class="where-info">
-                <div class="where-name name-sarah">Sarah</div>
-                <div class="where-location">🏠 Home</div>
-                <div class="where-since">Since 6:45 AM</div>
-              </div>
+          </div>
+          <div class="cal-item">
+            <div class="cal-person-dot dot-charlotte"></div>
+            <div class="cal-item-content">
+              <div class="cal-person-name name-charlotte">Charlotte</div>
+              <div class="cal-time">3:15 PM</div>
+              <div class="cal-title">🎹 Piano</div>
+              <div class="cal-who">@ Weston Creek</div>
             </div>
-
-            <div class="where-card">
-              <div class="where-avatar av-will">🧒</div>
-              <div class="where-info">
-                <div class="where-name name-will">Will</div>
-                <div class="where-location">🏠 Home</div>
-                <div class="where-since">Leaves 8:15</div>
-              </div>
+          </div>
+          <div class="cal-item">
+            <div class="cal-person-dot dot-sarah"></div>
+            <div class="cal-item-content">
+              <div class="cal-person-name name-sarah">Sarah</div>
+              <div class="cal-time">3:15 – 4:15 PM</div>
+              <div class="cal-title">🚗 Charlotte → piano</div>
+              <div class="cal-who">@ Weston Creek</div>
             </div>
-
-            <div class="where-card">
-              <div class="where-avatar av-charlotte">👧</div>
-              <div class="where-info">
-                <div class="where-name name-charlotte">Charlotte</div>
-                <div class="where-location">🏠 Home</div>
-                <div class="where-since">Leaves 8:15</div>
-              </div>
+          </div>
+          <div class="cal-item">
+            <div class="cal-person-dot dot-will"></div>
+            <div class="cal-item-content">
+              <div class="cal-person-name name-will">Will</div>
+              <div class="cal-time">4:30 PM</div>
+              <div class="cal-title">⚽ Soccer training</div>
             </div>
-
-            <div class="where-card">
-              <div class="where-avatar av-james">👦</div>
-              <div class="where-info">
-                <div class="where-name name-james">James</div>
-                <div class="where-location">🏠 Home</div>
-                <div class="where-since">Leaves 8:15</div>
-              </div>
+          </div>
+          <div class="cal-item">
+            <div class="cal-person-dot dot-james"></div>
+            <div class="cal-item-content">
+              <div class="cal-person-name name-james">James</div>
+              <div class="cal-time">5:00 PM</div>
+              <div class="cal-title">🏀 Basketball</div>
+              <div class="cal-who">@ Queanbeyan PCYC</div>
+            </div>
+          </div>
+          <div class="cal-item">
+            <div class="cal-person-dot dot-family"></div>
+            <div class="cal-item-content">
+              <div class="cal-person-name name-family">Family</div>
+              <div class="cal-time">6:30 PM</div>
+              <div class="cal-title">Dinner — taco night 🌮</div>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- 4 Camera Feeds -->
       <div class="cameras-row">
         <div class="cam-card">
           <div class="cam-feed">
@@ -562,7 +412,6 @@
 
   </div>
 
-  <!-- ========== STATUS BAR ========== -->
   <div class="status-bar">
     <div class="status-item">
       <div class="status-icon">🫧</div>
@@ -598,16 +447,14 @@
     </div>
   </div>
 
-  <!-- ========== ANNOUNCEMENTS ========== -->
   <div class="announce-bar">
     <div class="announce-icon">📢</div>
     <div class="announce-text">Bins go out tonight — it's recycling week</div>
     <div class="announce-steve">🦞 Steve is online</div>
   </div>
 
-  </div><!-- /content -->
+  </div>
 
-  <!-- ========== RIGHT RAIL: FULL HEIGHT ========== -->
   <div class="right">
     <div class="card events-card">
       <div class="card-label">Recent Activity</div>
@@ -635,6 +482,10 @@
         <div class="event-thumb">
           <div class="event-snap"><div class="event-badge person">👤 Person</div><div class="event-snap-icon">📸</div></div>
           <div class="event-info"><div class="event-camera">Back Door</div><div class="event-time">6:10 AM · 1h 32m</div></div>
+        </div>
+        <div class="event-thumb">
+          <div class="event-snap"><div class="event-badge vehicle">🚗 Vehicle</div><div class="event-snap-icon">📸</div></div>
+          <div class="event-info"><div class="event-camera">Garage</div><div class="event-time">5:48 AM · 1h 54m</div></div>
         </div>
       </div>
     </div>
