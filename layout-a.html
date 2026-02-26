@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=3840,height=2160">
+<title>Kitchen TV Dashboard — Layout A (3-Column Grid)</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #0f0f0f;
+    color: #e8e8e8;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    width: 3840px; height: 2160px;
+    overflow: hidden;
+    padding: 4rem;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: auto 1fr auto;
+    gap: 3rem;
+    height: 100%;
+  }
+
+  .card {
+    background: #1a1a1a;
+    border: 1px solid #2a2a2a;
+    border-radius: 2.5rem;
+    padding: 3rem;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .span-2 { grid-column: span 2; }
+  .span-3 { grid-column: span 3; }
+
+  .card-label {
+    font-size: 1.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #666;
+    margin-bottom: 1.5rem;
+  }
+
+  /* Clock */
+  .clock-time {
+    font-size: 12rem;
+    font-weight: 200;
+    letter-spacing: -0.02em;
+    line-height: 1;
+  }
+  .clock-date {
+    font-size: 3.2rem;
+    color: #888;
+    margin-top: 1rem;
+  }
+
+  /* Weather */
+  .weather-temp {
+    font-size: 8rem;
+    font-weight: 200;
+    line-height: 1;
+  }
+  .weather-desc {
+    font-size: 2.4rem;
+    color: #888;
+    margin-top: 0.5rem;
+  }
+  .weather-icon {
+    font-size: 6rem;
+    float: right;
+    margin-top: -1rem;
+  }
+
+  /* Chores */
+  .chore-item {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 1.2rem 0;
+    border-bottom: 1px solid #222;
+    font-size: 2.4rem;
+  }
+  .chore-item:last-child { border: none; }
+  .chore-check {
+    width: 2.5rem; height: 2.5rem;
+    border-radius: 50%;
+    border: 3px solid #444;
+    flex-shrink: 0;
+  }
+  .chore-check.done {
+    background: #4ade80;
+    border-color: #4ade80;
+  }
+  .chore-done { text-decoration: line-through; color: #555; }
+
+  /* Calendar */
+  .cal-item {
+    padding: 1.2rem 0;
+    border-bottom: 1px solid #222;
+  }
+  .cal-item:last-child { border: none; }
+  .cal-time { font-size: 1.8rem; color: #f59e0b; }
+  .cal-title { font-size: 2.3rem; margin-top: 0.3rem; }
+  .cal-who { font-size: 1.7rem; color: #666; }
+
+  /* Camera */
+  .camera-placeholder {
+    flex: 1;
+    background: #111;
+    border-radius: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 6rem;
+    color: #333;
+  }
+
+  /* Announcements */
+  .announce-bar {
+    display: flex;
+    align-items: center;
+    gap: 3rem;
+    height: 100%;
+  }
+  .announce-icon { font-size: 4rem; }
+  .announce-text { font-size: 2.8rem; color: #aaa; }
+  .announce-steve {
+    margin-left: auto;
+    font-size: 2.2rem;
+    color: #666;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+</style>
+</head>
+<body>
+<div class="grid">
+  <!-- Row 1: Clock (2 cols) + Weather (1 col) -->
+  <div class="card span-2">
+    <div class="card-label">Now</div>
+    <div class="clock-time">7:42</div>
+    <div class="clock-date">Wednesday, 26 February</div>
+  </div>
+  <div class="card">
+    <div class="card-label">Weather</div>
+    <div class="weather-icon">⛅</div>
+    <div class="weather-temp">19°</div>
+    <div class="weather-desc">Partly cloudy · H 24° L 14°</div>
+  </div>
+
+  <!-- Row 2: Chores + Calendar + Camera -->
+  <div class="card">
+    <div class="card-label">Chores</div>
+    <div class="chore-item"><div class="chore-check done"></div><span class="chore-done">Empty dishwasher</span></div>
+    <div class="chore-item"><div class="chore-check done"></div><span class="chore-done">Feed Violet</span></div>
+    <div class="chore-item"><div class="chore-check"></div><span>Wipe kitchen bench</span></div>
+    <div class="chore-item"><div class="chore-check"></div><span>Take bins out</span></div>
+    <div class="chore-item"><div class="chore-check"></div><span>Tidy rooms</span></div>
+    <div style="flex:1"></div>
+    <div style="font-size:1.8rem;color:#4ade80;margin-top:1rem;">2 of 5 done ✓</div>
+  </div>
+  <div class="card">
+    <div class="card-label">Today</div>
+    <div class="cal-item">
+      <div class="cal-time">8:30 AM</div>
+      <div class="cal-title">School drop-off</div>
+    </div>
+    <div class="cal-item">
+      <div class="cal-time">3:15 PM</div>
+      <div class="cal-title">Charlotte — piano</div>
+      <div class="cal-who">@ Weston Creek</div>
+    </div>
+    <div class="cal-item">
+      <div class="cal-time">5:00 PM</div>
+      <div class="cal-title">James — basketball</div>
+      <div class="cal-who">@ Queanbeyan PCYC</div>
+    </div>
+    <div class="cal-item">
+      <div class="cal-time">6:30 PM</div>
+      <div class="cal-title">Dinner — taco night 🌮</div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-label">Front Door</div>
+    <div class="camera-placeholder">📷</div>
+  </div>
+
+  <!-- Row 3: Announcements bar (full width) -->
+  <div class="card span-3">
+    <div class="announce-bar">
+      <div class="announce-icon">📢</div>
+      <div class="announce-text">Bins go out tonight — it's recycling week</div>
+      <div class="announce-steve">🦞 Steve is online</div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

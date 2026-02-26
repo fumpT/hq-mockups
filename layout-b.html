@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=3840,height=2160">
+<title>Kitchen TV Dashboard — Layout B (Sidebar + Main)</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #0f0f0f;
+    color: #e8e8e8;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    width: 3840px; height: 2160px;
+    overflow: hidden;
+    padding: 4rem;
+  }
+
+  .layout {
+    display: grid;
+    grid-template-columns: 840px 1fr;
+    gap: 3rem;
+    height: 100%;
+  }
+
+  .sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+  }
+
+  .main {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr auto;
+    gap: 3rem;
+  }
+
+  .card {
+    background: #1a1a1a;
+    border: 1px solid #2a2a2a;
+    border-radius: 2.5rem;
+    padding: 3rem;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .card-label {
+    font-size: 1.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #666;
+    margin-bottom: 1.5rem;
+  }
+
+  /* Clock - hero style in sidebar */
+  .clock-card {
+    text-align: center;
+    justify-content: center;
+    padding: 4rem 3rem;
+  }
+  .clock-time {
+    font-size: 14rem;
+    font-weight: 100;
+    letter-spacing: -0.03em;
+    line-height: 1;
+  }
+  .clock-date {
+    font-size: 2.6rem;
+    color: #888;
+    margin-top: 1.5rem;
+  }
+  .clock-greeting {
+    font-size: 3.2rem;
+    color: #f59e0b;
+    margin-top: 2rem;
+    font-weight: 300;
+  }
+
+  /* Weather compact in sidebar */
+  .weather-row {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+  }
+  .weather-icon { font-size: 6rem; }
+  .weather-temp {
+    font-size: 7rem;
+    font-weight: 200;
+    line-height: 1;
+  }
+  .weather-details {
+    margin-top: 1.5rem;
+    font-size: 2rem;
+    color: #888;
+    line-height: 1.5;
+  }
+
+  /* Chores in sidebar — scrollable */
+  .chores-card { flex: 1; min-height: 0; }
+  .chore-list { overflow-y: auto; flex: 1; }
+  .chore-item {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 1.1rem 0;
+    border-bottom: 1px solid #222;
+    font-size: 2.3rem;
+  }
+  .chore-item:last-child { border: none; }
+  .chore-check {
+    width: 2.4rem; height: 2.4rem;
+    border-radius: 50%;
+    border: 3px solid #444;
+    flex-shrink: 0;
+  }
+  .chore-check.done { background: #4ade80; border-color: #4ade80; }
+  .chore-done { text-decoration: line-through; color: #555; }
+  .chore-summary {
+    font-size: 1.8rem;
+    color: #4ade80;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #222;
+  }
+
+  /* Calendar - main panel top-left */
+  .cal-item {
+    padding: 1.4rem 0;
+    border-bottom: 1px solid #222;
+  }
+  .cal-item:last-child { border: none; }
+  .cal-time {
+    font-size: 1.8rem;
+    color: #f59e0b;
+    font-weight: 500;
+  }
+  .cal-title { font-size: 2.4rem; margin-top: 0.3rem; }
+  .cal-who { font-size: 1.7rem; color: #666; }
+  .cal-next {
+    background: #f59e0b15;
+    border: 1px solid #f59e0b33;
+    border-radius: 1.5rem;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+  }
+  .cal-next-label { font-size: 1.5rem; color: #f59e0b; text-transform: uppercase; letter-spacing: 0.1em; }
+
+  /* Camera - main panel top-right */
+  .camera-placeholder {
+    flex: 1;
+    background: #111;
+    border-radius: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 8rem;
+    color: #333;
+  }
+  .camera-label-bottom {
+    font-size: 1.7rem;
+    color: #555;
+    text-align: center;
+    margin-top: 1rem;
+  }
+
+  /* Announcements - bottom of main, full width */
+  .announce-full { grid-column: span 2; }
+  .announce-bar {
+    display: flex;
+    align-items: center;
+    gap: 3rem;
+    height: 100%;
+  }
+  .announce-icon { font-size: 4rem; }
+  .announce-text { font-size: 2.8rem; color: #aaa; flex: 1; }
+  .announce-steve {
+    font-size: 2rem;
+    color: #666;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    white-space: nowrap;
+  }
+</style>
+</head>
+<body>
+<div class="layout">
+  <!-- LEFT SIDEBAR -->
+  <div class="sidebar">
+    <div class="card clock-card">
+      <div class="clock-time">7:42</div>
+      <div class="clock-date">Wednesday, 26 February</div>
+      <div class="clock-greeting">Good morning ☀️</div>
+    </div>
+
+    <div class="card">
+      <div class="card-label">Jerrabomberra</div>
+      <div class="weather-row">
+        <div class="weather-icon">⛅</div>
+        <div class="weather-temp">19°</div>
+      </div>
+      <div class="weather-details">
+        Partly cloudy<br>
+        High 24° · Low 14° · UV 6
+      </div>
+    </div>
+
+    <div class="card chores-card">
+      <div class="card-label">Chores</div>
+      <div class="chore-list">
+        <div class="chore-item"><div class="chore-check done"></div><span class="chore-done">Empty dishwasher</span></div>
+        <div class="chore-item"><div class="chore-check done"></div><span class="chore-done">Feed Violet</span></div>
+        <div class="chore-item"><div class="chore-check"></div><span>Wipe kitchen bench</span></div>
+        <div class="chore-item"><div class="chore-check"></div><span>Take bins out</span></div>
+        <div class="chore-item"><div class="chore-check"></div><span>Tidy rooms</span></div>
+      </div>
+      <div class="chore-summary">2 of 5 done ✓</div>
+    </div>
+  </div>
+
+  <!-- MAIN PANEL -->
+  <div class="main">
+    <!-- Calendar -->
+    <div class="card">
+      <div class="card-label">Today</div>
+      <div class="cal-next">
+        <div class="cal-next-label">Up next</div>
+        <div class="cal-title" style="margin-top:0.5rem;">School drop-off</div>
+        <div class="cal-time">8:30 AM — in 48 min</div>
+      </div>
+      <div class="cal-item">
+        <div class="cal-time">3:15 PM</div>
+        <div class="cal-title">Charlotte — piano</div>
+        <div class="cal-who">@ Weston Creek</div>
+      </div>
+      <div class="cal-item">
+        <div class="cal-time">5:00 PM</div>
+        <div class="cal-title">James — basketball</div>
+        <div class="cal-who">@ Queanbeyan PCYC</div>
+      </div>
+      <div class="cal-item">
+        <div class="cal-time">6:30 PM</div>
+        <div class="cal-title">Dinner — taco night 🌮</div>
+      </div>
+    </div>
+
+    <!-- Camera -->
+    <div class="card">
+      <div class="card-label">Front Door</div>
+      <div class="camera-placeholder">📷</div>
+      <div class="camera-label-bottom">Live · No motion</div>
+    </div>
+
+    <!-- Announcements -->
+    <div class="card announce-full">
+      <div class="announce-bar">
+        <div class="announce-icon">📢</div>
+        <div class="announce-text">Bins go out tonight — it's recycling week</div>
+        <div class="announce-steve">🦞 Steve is online</div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
