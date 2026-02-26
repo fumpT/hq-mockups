@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=3840,height=2160">
-<title>Kitchen TV Dashboard — Layout B v5</title>
+<title>Kitchen TV Dashboard — Layout B v6</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
@@ -21,7 +21,6 @@
     gap: 2.5rem;
     height: 100%;
   }
-
   .sidebar { display: flex; flex-direction: column; gap: 2.5rem; }
   .center { display: flex; flex-direction: column; gap: 2.5rem; }
   .right { display: flex; flex-direction: column; gap: 2.5rem; }
@@ -43,7 +42,7 @@
     margin-bottom: 1.2rem;
   }
 
-  /* ---- SIDEBAR ---- */
+  /* ---- LEFT SIDEBAR ---- */
   .clock-card { text-align: center; justify-content: center; padding: 3rem 2.5rem; }
   .clock-time { font-size: 11rem; font-weight: 100; letter-spacing: -0.03em; line-height: 1; }
   .clock-date { font-size: 2rem; color: #888; margin-top: 1rem; }
@@ -63,7 +62,7 @@
   .chore-done { text-decoration: line-through; color: #555; }
   .chore-summary { font-size: 1.4rem; color: #4ade80; margin-top: 0.6rem; padding-top: 0.6rem; border-top: 1px solid #222; }
 
-  /* ---- 3-DAY CALENDAR ---- */
+  /* ---- CALENDAR (v2 style: vertical list per person) ---- */
   .cal-card { flex: 1; min-height: 0; overflow: hidden; }
 
   .cal-next-banner {
@@ -82,146 +81,112 @@
   .cal-next-title { font-size: 2rem; margin-top: 0.2rem; }
   .cal-next-time { font-size: 1.4rem; color: #f59e0b; }
 
-  /* Legend */
-  .cal-legend {
-    display: flex;
-    gap: 2rem;
-    margin-bottom: 1.2rem;
-    flex-wrap: wrap;
-  }
-  .cal-legend-item {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: 1.2rem;
-    color: #888;
-  }
-  .cal-legend-dot {
-    width: 1rem;
-    height: 1rem;
-    border-radius: 50%;
-  }
-  .cal-legend-dot.c-andrew { background: #3b82f6; }
-  .cal-legend-dot.c-sarah { background: #a855f7; }
-  .cal-legend-dot.c-will { background: #22c55e; }
-  .cal-legend-dot.c-charlotte { background: #ec4899; }
-  .cal-legend-dot.c-james { background: #f59e0b; }
-
-  /* 3-day grid */
-  .cal-3day {
+  /* 5-lane layout */
+  .cal-lanes {
     display: grid;
-    grid-template-columns: 5.5rem repeat(3, 1fr);
+    grid-template-columns: repeat(5, 1fr);
+    gap: 1.5rem;
     flex: 1;
     min-height: 0;
-    position: relative;
+    overflow-y: auto;
   }
-
-  /* Day headers */
-  .cal-day-header {
-    text-align: center;
-    padding: 0.8rem 0;
-    border-bottom: 2px solid #2a2a2a;
-    position: sticky;
-    top: 0;
-    background: #1a1a1a;
-    z-index: 5;
-  }
-  .cal-day-header.today { border-bottom-color: #3b82f6; }
-  .cal-day-name { font-size: 1.3rem; color: #888; text-transform: uppercase; letter-spacing: 0.05em; }
-  .cal-day-date { font-size: 2rem; font-weight: 500; margin-top: 0.2rem; }
-  .cal-day-date.today-date { color: #3b82f6; }
-  .cal-corner {
-    border-bottom: 2px solid #2a2a2a;
-    position: sticky;
-    top: 0;
-    background: #1a1a1a;
-    z-index: 5;
-  }
-
-  /* Hour labels column */
-  .cal-hours {
-    position: relative;
-    border-right: 1px solid #1f1f1f;
-  }
-  .cal-hour-mark {
-    position: absolute;
-    right: 0.8rem;
-    font-size: 1.15rem;
-    color: #555;
-    font-family: monospace;
-    transform: translateY(-50%);
-    text-align: right;
-  }
-
-  /* Day column */
-  .cal-day-col {
-    position: relative;
-    border-right: 1px solid #1a1a1a;
-  }
-  .cal-day-col:last-child { border-right: none; }
-
-  /* Grid lines inside day columns */
-  .cal-day-gridlines {
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-  }
-  .cal-hline {
-    position: absolute;
-    left: 0; right: 0;
-    border-top: 1px solid #1a1a1a;
-  }
-  .cal-hline-half {
-    border-top: 1px dotted #151515;
-  }
-
-  /* Now line */
-  .cal-now {
-    position: absolute;
-    left: -0.5rem; right: 0;
-    display: flex;
-    align-items: center;
-    z-index: 10;
-  }
-  .cal-now-dot { width: 0.8rem; height: 0.8rem; background: #ef4444; border-radius: 50%; flex-shrink: 0; }
-  .cal-now-line { flex: 1; height: 2px; background: #ef4444; }
-
-  /* Event blocks */
-  .cal-ev {
-    position: absolute;
-    left: 0.3rem; right: 0.3rem;
-    border-radius: 0.6rem;
-    padding: 0.4rem 0.6rem;
-    overflow: hidden;
-    min-height: 2.5rem;
+  .cal-lane {
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    gap: 0;
   }
-  .cal-ev-title { font-size: 1.15rem; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .cal-ev-time { font-size: 1rem; opacity: 0.7; white-space: nowrap; }
-  .cal-ev-loc { font-size: 0.9rem; opacity: 0.5; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .cal-lane-header {
+    text-align: center;
+    padding-bottom: 1rem;
+    margin-bottom: 1rem;
+    position: sticky;
+    top: 0;
+    background: #1a1a1a;
+    z-index: 2;
+  }
+  .cal-lane-avatar {
+    width: 4rem;
+    height: 4rem;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    margin-bottom: 0.4rem;
+  }
+  .cal-lane-name {
+    font-size: 1.4rem;
+    font-weight: 500;
+  }
+  .cal-lane-events {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+  }
 
-  /* Stacked events in same slot */
-  .cal-ev-stack-2 { left: 0.3rem; right: 52%; }
-  .cal-ev-stack-2b { left: 50%; right: 0.3rem; }
-  .cal-ev-stack-3 { left: 0.3rem; right: 68%; }
-  .cal-ev-stack-3b { left: 34%; right: 34%; }
-  .cal-ev-stack-3c { left: 68%; right: 0.3rem; }
+  /* Event card */
+  .cal-ev {
+    border-radius: 1rem;
+    padding: 1rem 1.2rem;
+    border-left: 4px solid;
+  }
+  .cal-ev-time {
+    font-size: 1.1rem;
+    opacity: 0.7;
+    margin-bottom: 0.2rem;
+  }
+  .cal-ev-title {
+    font-size: 1.5rem;
+    font-weight: 500;
+  }
+  .cal-ev-loc {
+    font-size: 1.1rem;
+    opacity: 0.5;
+    margin-top: 0.15rem;
+  }
 
   /* Person colors */
-  .ev-andrew { background: #1e3a5f; border-left: 3px solid #3b82f6; }
-  .ev-sarah { background: #3b1f4e; border-left: 3px solid #a855f7; }
-  .ev-will { background: #1a3d2e; border-left: 3px solid #22c55e; }
-  .ev-charlotte { background: #4a2532; border-left: 3px solid #ec4899; }
-  .ev-james { background: #3d3019; border-left: 3px solid #f59e0b; }
-  .ev-family { background: #2a2a2a; border-left: 3px solid #888; }
+  .lane-andrew .cal-lane-avatar { background: #1e3a5f; border: 3px solid #3b82f6; }
+  .lane-andrew .cal-lane-name { color: #3b82f6; }
+  .ev-andrew { background: #1e3a5f; border-color: #3b82f6; }
 
-  /* Shared/family event spanning full width */
-  .cal-ev-full {
-    left: 0.3rem;
-    right: 0.3rem;
+  .lane-sarah .cal-lane-avatar { background: #3b1f4e; border: 3px solid #a855f7; }
+  .lane-sarah .cal-lane-name { color: #a855f7; }
+  .ev-sarah { background: #3b1f4e; border-color: #a855f7; }
+
+  .lane-will .cal-lane-avatar { background: #1a3d2e; border: 3px solid #22c55e; }
+  .lane-will .cal-lane-name { color: #22c55e; }
+  .ev-will { background: #1a3d2e; border-color: #22c55e; }
+
+  .lane-charlotte .cal-lane-avatar { background: #4a2532; border: 3px solid #ec4899; }
+  .lane-charlotte .cal-lane-name { color: #ec4899; }
+  .ev-charlotte { background: #4a2532; border-color: #ec4899; }
+
+  .lane-james .cal-lane-avatar { background: #3d3019; border: 3px solid #f59e0b; }
+  .lane-james .cal-lane-name { color: #f59e0b; }
+  .ev-james { background: #3d3019; border-color: #f59e0b; }
+
+  /* Empty state */
+  .cal-ev-empty {
+    font-size: 1.3rem;
+    color: #333;
+    text-align: center;
+    padding: 2rem 0;
   }
+
+  /* Family footer */
+  .cal-family-bar {
+    margin-top: 1.5rem;
+    padding: 1.2rem 2rem;
+    background: #2a2a2a;
+    border-radius: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+  }
+  .cal-family-icon { font-size: 2.5rem; }
+  .cal-family-title { font-size: 1.8rem; font-weight: 500; }
+  .cal-family-time { font-size: 1.4rem; color: #888; }
 
   /* ---- CAMERAS ---- */
   .cameras-row {
@@ -369,9 +334,9 @@
   <!-- ========== CENTER ========== -->
   <div class="center">
 
-    <!-- 3-Day Family Calendar -->
+    <!-- Family Calendar — v2 style (vertical list per person, colour coded) -->
     <div class="card cal-card">
-      <div class="card-label">Family Schedule</div>
+      <div class="card-label">Today — Family Schedule</div>
 
       <div class="cal-next-banner">
         <div class="cal-next-icon">⏰</div>
@@ -382,261 +347,110 @@
         </div>
       </div>
 
-      <div class="cal-legend">
-        <div class="cal-legend-item"><div class="cal-legend-dot c-andrew"></div>Andrew</div>
-        <div class="cal-legend-item"><div class="cal-legend-dot c-sarah"></div>Sarah</div>
-        <div class="cal-legend-item"><div class="cal-legend-dot c-will"></div>Will</div>
-        <div class="cal-legend-item"><div class="cal-legend-dot c-charlotte"></div>Charlotte</div>
-        <div class="cal-legend-item"><div class="cal-legend-dot c-james"></div>James</div>
+      <div class="cal-lanes">
+        <!-- Andrew -->
+        <div class="cal-lane lane-andrew">
+          <div class="cal-lane-header">
+            <div class="cal-lane-avatar">👨</div>
+            <div class="cal-lane-name">Andrew</div>
+          </div>
+          <div class="cal-lane-events">
+            <div class="cal-ev ev-andrew">
+              <div class="cal-ev-time">8:15 AM</div>
+              <div class="cal-ev-title">🚗 School drop-off</div>
+            </div>
+            <div class="cal-ev ev-andrew">
+              <div class="cal-ev-time">9:00 AM – 5:00 PM</div>
+              <div class="cal-ev-title">Work</div>
+              <div class="cal-ev-loc">Cloudflare (remote)</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sarah -->
+        <div class="cal-lane lane-sarah">
+          <div class="cal-lane-header">
+            <div class="cal-lane-avatar">👩</div>
+            <div class="cal-lane-name">Sarah</div>
+          </div>
+          <div class="cal-lane-events">
+            <div class="cal-ev ev-sarah">
+              <div class="cal-ev-time">10:00 – 11:00 AM</div>
+              <div class="cal-ev-title">☕ Coffee with Mel</div>
+              <div class="cal-ev-loc">Milk Bar, Kingston</div>
+            </div>
+            <div class="cal-ev ev-sarah">
+              <div class="cal-ev-time">3:15 – 4:15 PM</div>
+              <div class="cal-ev-title">🚗 Charlotte → piano</div>
+              <div class="cal-ev-loc">Weston Creek</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Will -->
+        <div class="cal-lane lane-will">
+          <div class="cal-lane-header">
+            <div class="cal-lane-avatar">🧒</div>
+            <div class="cal-lane-name">Will</div>
+          </div>
+          <div class="cal-lane-events">
+            <div class="cal-ev ev-will">
+              <div class="cal-ev-time">8:30 AM – 3:00 PM</div>
+              <div class="cal-ev-title">🏫 School</div>
+            </div>
+            <div class="cal-ev ev-will">
+              <div class="cal-ev-time">4:30 – 5:30 PM</div>
+              <div class="cal-ev-title">⚽ Soccer training</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Charlotte -->
+        <div class="cal-lane lane-charlotte">
+          <div class="cal-lane-header">
+            <div class="cal-lane-avatar">👧</div>
+            <div class="cal-lane-name">Charlotte</div>
+          </div>
+          <div class="cal-lane-events">
+            <div class="cal-ev ev-charlotte">
+              <div class="cal-ev-time">8:30 AM – 3:00 PM</div>
+              <div class="cal-ev-title">🏫 School</div>
+            </div>
+            <div class="cal-ev ev-charlotte">
+              <div class="cal-ev-time">3:15 – 4:00 PM</div>
+              <div class="cal-ev-title">🎹 Piano lesson</div>
+              <div class="cal-ev-loc">Weston Creek</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- James -->
+        <div class="cal-lane lane-james">
+          <div class="cal-lane-header">
+            <div class="cal-lane-avatar">👦</div>
+            <div class="cal-lane-name">James</div>
+          </div>
+          <div class="cal-lane-events">
+            <div class="cal-ev ev-james">
+              <div class="cal-ev-time">8:30 AM – 3:00 PM</div>
+              <div class="cal-ev-title">🏫 School</div>
+            </div>
+            <div class="cal-ev ev-james">
+              <div class="cal-ev-time">5:00 – 6:00 PM</div>
+              <div class="cal-ev-title">🏀 Basketball</div>
+              <div class="cal-ev-loc">Queanbeyan PCYC</div>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <!-- Timeline: 7AM-9PM = 14 hours. Each hour = 7.14% -->
-      <div class="cal-3day">
-        <!-- Headers -->
-        <div class="cal-corner"></div>
-        <div class="cal-day-header today">
-          <div class="cal-day-name">Wed</div>
-          <div class="cal-day-date today-date">26</div>
+      <!-- Family event -->
+      <div class="cal-family-bar">
+        <div class="cal-family-icon">🌮</div>
+        <div>
+          <div class="cal-family-title">Taco Night</div>
+          <div class="cal-family-time">6:30 PM — whole family</div>
         </div>
-        <div class="cal-day-header">
-          <div class="cal-day-name">Thu</div>
-          <div class="cal-day-date">27</div>
-        </div>
-        <div class="cal-day-header">
-          <div class="cal-day-name">Fri</div>
-          <div class="cal-day-date">28</div>
-        </div>
-
-        <!-- Hour labels -->
-        <div class="cal-hours">
-          <div class="cal-hour-mark" style="top:0%">7a</div>
-          <div class="cal-hour-mark" style="top:7.14%">8a</div>
-          <div class="cal-hour-mark" style="top:14.28%">9a</div>
-          <div class="cal-hour-mark" style="top:21.42%">10a</div>
-          <div class="cal-hour-mark" style="top:28.57%">11a</div>
-          <div class="cal-hour-mark" style="top:35.71%">12p</div>
-          <div class="cal-hour-mark" style="top:42.85%">1p</div>
-          <div class="cal-hour-mark" style="top:50%">2p</div>
-          <div class="cal-hour-mark" style="top:57.14%">3p</div>
-          <div class="cal-hour-mark" style="top:64.28%">4p</div>
-          <div class="cal-hour-mark" style="top:71.42%">5p</div>
-          <div class="cal-hour-mark" style="top:78.57%">6p</div>
-          <div class="cal-hour-mark" style="top:85.71%">7p</div>
-          <div class="cal-hour-mark" style="top:92.85%">8p</div>
-        </div>
-
-        <!-- ======= TODAY (Wed 26) ======= -->
-        <div class="cal-day-col">
-          <div class="cal-day-gridlines">
-            <div class="cal-hline" style="top:0%"></div>
-            <div class="cal-hline cal-hline-half" style="top:3.57%"></div>
-            <div class="cal-hline" style="top:7.14%"></div>
-            <div class="cal-hline cal-hline-half" style="top:10.71%"></div>
-            <div class="cal-hline" style="top:14.28%"></div>
-            <div class="cal-hline cal-hline-half" style="top:17.85%"></div>
-            <div class="cal-hline" style="top:21.42%"></div>
-            <div class="cal-hline cal-hline-half" style="top:25%"></div>
-            <div class="cal-hline" style="top:28.57%"></div>
-            <div class="cal-hline cal-hline-half" style="top:32.14%"></div>
-            <div class="cal-hline" style="top:35.71%"></div>
-            <div class="cal-hline cal-hline-half" style="top:39.28%"></div>
-            <div class="cal-hline" style="top:42.85%"></div>
-            <div class="cal-hline cal-hline-half" style="top:46.42%"></div>
-            <div class="cal-hline" style="top:50%"></div>
-            <div class="cal-hline cal-hline-half" style="top:53.57%"></div>
-            <div class="cal-hline" style="top:57.14%"></div>
-            <div class="cal-hline cal-hline-half" style="top:60.71%"></div>
-            <div class="cal-hline" style="top:64.28%"></div>
-            <div class="cal-hline cal-hline-half" style="top:67.85%"></div>
-            <div class="cal-hline" style="top:71.42%"></div>
-            <div class="cal-hline cal-hline-half" style="top:75%"></div>
-            <div class="cal-hline" style="top:78.57%"></div>
-            <div class="cal-hline cal-hline-half" style="top:82.14%"></div>
-            <div class="cal-hline" style="top:85.71%"></div>
-            <div class="cal-hline cal-hline-half" style="top:89.28%"></div>
-            <div class="cal-hline" style="top:92.85%"></div>
-          </div>
-
-          <!-- Now line: 8:14 AM -->
-          <div class="cal-now" style="top:8.8%">
-            <div class="cal-now-dot"></div>
-            <div class="cal-now-line"></div>
-          </div>
-
-          <!-- Andrew: drop-off 8:15-8:45 -->
-          <div class="cal-ev ev-andrew cal-ev-stack-2" style="top:8.9%;height:3.6%">
-            <div class="cal-ev-title">🚗 Drop-off</div>
-          </div>
-          <!-- Sarah: drop-off helper (same time) -->
-          <!-- Andrew: Work 9-5 -->
-          <div class="cal-ev ev-andrew cal-ev-stack-2" style="top:14.28%;height:57.14%">
-            <div class="cal-ev-title">Work</div>
-            <div class="cal-ev-time">9a–5p</div>
-          </div>
-          <!-- Kids: School 8:30-3 -->
-          <div class="cal-ev ev-will cal-ev-stack-3" style="top:10.7%;height:46.4%">
-            <div class="cal-ev-title">Will</div>
-            <div class="cal-ev-time">School</div>
-          </div>
-          <div class="cal-ev ev-charlotte cal-ev-stack-3b" style="top:10.7%;height:46.4%">
-            <div class="cal-ev-title">Charl.</div>
-            <div class="cal-ev-time">School</div>
-          </div>
-          <div class="cal-ev ev-james cal-ev-stack-3c" style="top:10.7%;height:46.4%">
-            <div class="cal-ev-title">James</div>
-            <div class="cal-ev-time">School</div>
-          </div>
-          <!-- Sarah: Coffee 10-11 -->
-          <div class="cal-ev ev-sarah cal-ev-stack-2b" style="top:21.42%;height:7.14%">
-            <div class="cal-ev-title">☕ Coffee w/ Mel</div>
-            <div class="cal-ev-loc">Kingston</div>
-          </div>
-          <!-- Charlotte: Piano 3:15-4 -->
-          <div class="cal-ev ev-charlotte cal-ev-stack-2" style="top:58.9%;height:5.35%">
-            <div class="cal-ev-title">🎹 Piano</div>
-            <div class="cal-ev-loc">Weston Ck</div>
-          </div>
-          <!-- Sarah: Piano drive -->
-          <div class="cal-ev ev-sarah cal-ev-stack-2b" style="top:58.9%;height:7.14%">
-            <div class="cal-ev-title">🚗 Charlotte</div>
-            <div class="cal-ev-time">→ piano</div>
-          </div>
-          <!-- Will: Soccer 4:30-5:30 -->
-          <div class="cal-ev ev-will cal-ev-stack-2" style="top:64.28%;height:7.14%">
-            <div class="cal-ev-title">⚽ Soccer</div>
-          </div>
-          <!-- James: Basketball 5-6 -->
-          <div class="cal-ev ev-james cal-ev-stack-2b" style="top:71.42%;height:7.14%">
-            <div class="cal-ev-title">🏀 Basketball</div>
-            <div class="cal-ev-loc">PCYC</div>
-          </div>
-          <!-- Taco Night 6:30-7:30 -->
-          <div class="cal-ev ev-family cal-ev-full" style="top:78.57%;height:7.14%">
-            <div class="cal-ev-title">🌮 Taco Night</div>
-            <div class="cal-ev-time">6:30p · Family</div>
-          </div>
-        </div>
-
-        <!-- ======= TOMORROW (Thu 27) ======= -->
-        <div class="cal-day-col">
-          <div class="cal-day-gridlines">
-            <div class="cal-hline" style="top:0%"></div>
-            <div class="cal-hline cal-hline-half" style="top:3.57%"></div>
-            <div class="cal-hline" style="top:7.14%"></div>
-            <div class="cal-hline cal-hline-half" style="top:10.71%"></div>
-            <div class="cal-hline" style="top:14.28%"></div>
-            <div class="cal-hline cal-hline-half" style="top:17.85%"></div>
-            <div class="cal-hline" style="top:21.42%"></div>
-            <div class="cal-hline cal-hline-half" style="top:25%"></div>
-            <div class="cal-hline" style="top:28.57%"></div>
-            <div class="cal-hline cal-hline-half" style="top:32.14%"></div>
-            <div class="cal-hline" style="top:35.71%"></div>
-            <div class="cal-hline cal-hline-half" style="top:39.28%"></div>
-            <div class="cal-hline" style="top:42.85%"></div>
-            <div class="cal-hline cal-hline-half" style="top:46.42%"></div>
-            <div class="cal-hline" style="top:50%"></div>
-            <div class="cal-hline cal-hline-half" style="top:53.57%"></div>
-            <div class="cal-hline" style="top:57.14%"></div>
-            <div class="cal-hline cal-hline-half" style="top:60.71%"></div>
-            <div class="cal-hline" style="top:64.28%"></div>
-            <div class="cal-hline cal-hline-half" style="top:67.85%"></div>
-            <div class="cal-hline" style="top:71.42%"></div>
-            <div class="cal-hline cal-hline-half" style="top:75%"></div>
-            <div class="cal-hline" style="top:78.57%"></div>
-            <div class="cal-hline cal-hline-half" style="top:82.14%"></div>
-            <div class="cal-hline" style="top:85.71%"></div>
-            <div class="cal-hline cal-hline-half" style="top:89.28%"></div>
-            <div class="cal-hline" style="top:92.85%"></div>
-          </div>
-          <!-- Andrew: Work 9-5 -->
-          <div class="cal-ev ev-andrew cal-ev-stack-2" style="top:14.28%;height:57.14%">
-            <div class="cal-ev-title">Work</div>
-            <div class="cal-ev-time">9a–5p</div>
-          </div>
-          <!-- Kids: School -->
-          <div class="cal-ev ev-will cal-ev-stack-3" style="top:10.7%;height:46.4%">
-            <div class="cal-ev-title">Will</div>
-            <div class="cal-ev-time">School</div>
-          </div>
-          <div class="cal-ev ev-charlotte cal-ev-stack-3b" style="top:10.7%;height:46.4%">
-            <div class="cal-ev-title">Charl.</div>
-            <div class="cal-ev-time">School</div>
-          </div>
-          <div class="cal-ev ev-james cal-ev-stack-3c" style="top:10.7%;height:46.4%">
-            <div class="cal-ev-title">James</div>
-            <div class="cal-ev-time">School</div>
-          </div>
-          <!-- Sarah: Physio 2-3 -->
-          <div class="cal-ev ev-sarah cal-ev-stack-2b" style="top:50%;height:7.14%">
-            <div class="cal-ev-title">🩺 Physio</div>
-            <div class="cal-ev-loc">Queanbeyan</div>
-          </div>
-          <!-- James: Tutoring 4-5 -->
-          <div class="cal-ev ev-james cal-ev-stack-2b" style="top:64.28%;height:7.14%">
-            <div class="cal-ev-title">📚 Tutoring</div>
-          </div>
-        </div>
-
-        <!-- ======= FRIDAY (Feb 28) ======= -->
-        <div class="cal-day-col">
-          <div class="cal-day-gridlines">
-            <div class="cal-hline" style="top:0%"></div>
-            <div class="cal-hline cal-hline-half" style="top:3.57%"></div>
-            <div class="cal-hline" style="top:7.14%"></div>
-            <div class="cal-hline cal-hline-half" style="top:10.71%"></div>
-            <div class="cal-hline" style="top:14.28%"></div>
-            <div class="cal-hline cal-hline-half" style="top:17.85%"></div>
-            <div class="cal-hline" style="top:21.42%"></div>
-            <div class="cal-hline cal-hline-half" style="top:25%"></div>
-            <div class="cal-hline" style="top:28.57%"></div>
-            <div class="cal-hline cal-hline-half" style="top:32.14%"></div>
-            <div class="cal-hline" style="top:35.71%"></div>
-            <div class="cal-hline cal-hline-half" style="top:39.28%"></div>
-            <div class="cal-hline" style="top:42.85%"></div>
-            <div class="cal-hline cal-hline-half" style="top:46.42%"></div>
-            <div class="cal-hline" style="top:50%"></div>
-            <div class="cal-hline cal-hline-half" style="top:53.57%"></div>
-            <div class="cal-hline" style="top:57.14%"></div>
-            <div class="cal-hline cal-hline-half" style="top:60.71%"></div>
-            <div class="cal-hline" style="top:64.28%"></div>
-            <div class="cal-hline cal-hline-half" style="top:67.85%"></div>
-            <div class="cal-hline" style="top:71.42%"></div>
-            <div class="cal-hline cal-hline-half" style="top:75%"></div>
-            <div class="cal-hline" style="top:78.57%"></div>
-            <div class="cal-hline cal-hline-half" style="top:82.14%"></div>
-            <div class="cal-hline" style="top:85.71%"></div>
-            <div class="cal-hline cal-hline-half" style="top:89.28%"></div>
-            <div class="cal-hline" style="top:92.85%"></div>
-          </div>
-          <!-- Andrew: Work 9-5 -->
-          <div class="cal-ev ev-andrew cal-ev-stack-2" style="top:14.28%;height:57.14%">
-            <div class="cal-ev-title">Work</div>
-            <div class="cal-ev-time">9a–5p</div>
-          </div>
-          <!-- Kids: School 8:30-12:30 (Fri early) -->
-          <div class="cal-ev ev-will cal-ev-stack-3" style="top:10.7%;height:28.5%">
-            <div class="cal-ev-title">Will</div>
-            <div class="cal-ev-time">School (½)</div>
-          </div>
-          <div class="cal-ev ev-charlotte cal-ev-stack-3b" style="top:10.7%;height:28.5%">
-            <div class="cal-ev-title">Charl.</div>
-            <div class="cal-ev-time">School (½)</div>
-          </div>
-          <div class="cal-ev ev-james cal-ev-stack-3c" style="top:10.7%;height:28.5%">
-            <div class="cal-ev-title">James</div>
-            <div class="cal-ev-time">School (½)</div>
-          </div>
-          <!-- Family: Movie night 7-9 -->
-          <div class="cal-ev ev-family cal-ev-full" style="top:85.71%;height:14.28%">
-            <div class="cal-ev-title">🎬 Movie Night</div>
-            <div class="cal-ev-time">7p · Family</div>
-          </div>
-          <!-- Sarah: Grocery run 1-2 -->
-          <div class="cal-ev ev-sarah cal-ev-stack-2b" style="top:42.85%;height:7.14%">
-            <div class="cal-ev-title">🛒 Groceries</div>
-          </div>
-        </div>
-
       </div>
     </div>
 
@@ -703,7 +517,6 @@
         <div class="announce-steve">🦞 Steve</div>
       </div>
     </div>
-
   </div>
 
   <!-- ========== RIGHT SIDEBAR: RECENT EVENTS ========== -->
