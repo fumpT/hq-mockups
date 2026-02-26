@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=3840,height=2160">
-<title>Kitchen TV Dashboard — Layout B v4</title>
+<title>Kitchen TV Dashboard — Layout B v5</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
@@ -17,17 +17,15 @@
 
   .layout {
     display: grid;
-    grid-template-columns: 760px 1fr;
+    grid-template-columns: 700px 1fr 340px;
     gap: 2.5rem;
     height: 100%;
   }
+
   .sidebar { display: flex; flex-direction: column; gap: 2.5rem; }
-  .main {
-    display: grid;
-    grid-template-columns: 1fr;
-    grid-template-rows: 1fr auto auto auto;
-    gap: 2.5rem;
-  }
+  .center { display: flex; flex-direction: column; gap: 2.5rem; }
+  .right { display: flex; flex-direction: column; gap: 2.5rem; }
+
   .card {
     background: #1a1a1a;
     border: 1px solid #2a2a2a;
@@ -47,209 +45,194 @@
 
   /* ---- SIDEBAR ---- */
   .clock-card { text-align: center; justify-content: center; padding: 3rem 2.5rem; }
-  .clock-time { font-size: 12rem; font-weight: 100; letter-spacing: -0.03em; line-height: 1; }
-  .clock-date { font-size: 2.2rem; color: #888; margin-top: 1rem; }
-  .clock-greeting { font-size: 2.8rem; color: #f59e0b; margin-top: 1.5rem; font-weight: 300; }
+  .clock-time { font-size: 11rem; font-weight: 100; letter-spacing: -0.03em; line-height: 1; }
+  .clock-date { font-size: 2rem; color: #888; margin-top: 1rem; }
+  .clock-greeting { font-size: 2.6rem; color: #f59e0b; margin-top: 1.2rem; font-weight: 300; }
 
   .weather-row { display: flex; align-items: center; gap: 1.5rem; }
-  .weather-icon { font-size: 5rem; }
-  .weather-temp { font-size: 6rem; font-weight: 200; line-height: 1; }
-  .weather-details { margin-top: 1rem; font-size: 1.8rem; color: #888; line-height: 1.4; }
+  .weather-icon { font-size: 4.5rem; }
+  .weather-temp { font-size: 5.5rem; font-weight: 200; line-height: 1; }
+  .weather-details { margin-top: 0.8rem; font-size: 1.6rem; color: #888; line-height: 1.4; }
 
   .chores-card { flex: 1; min-height: 0; }
   .chore-list { overflow-y: auto; flex: 1; }
-  .chore-item { display: flex; align-items: center; gap: 1.2rem; padding: 0.9rem 0; border-bottom: 1px solid #222; font-size: 2rem; }
+  .chore-item { display: flex; align-items: center; gap: 1rem; padding: 0.8rem 0; border-bottom: 1px solid #222; font-size: 1.8rem; }
   .chore-item:last-child { border: none; }
-  .chore-check { width: 2rem; height: 2rem; border-radius: 50%; border: 3px solid #444; flex-shrink: 0; }
+  .chore-check { width: 1.8rem; height: 1.8rem; border-radius: 50%; border: 3px solid #444; flex-shrink: 0; }
   .chore-check.done { background: #4ade80; border-color: #4ade80; }
   .chore-done { text-decoration: line-through; color: #555; }
-  .chore-summary { font-size: 1.5rem; color: #4ade80; margin-top: 0.8rem; padding-top: 0.8rem; border-top: 1px solid #222; }
+  .chore-summary { font-size: 1.4rem; color: #4ade80; margin-top: 0.6rem; padding-top: 0.6rem; border-top: 1px solid #222; }
 
-  /* ---- FAMILY CALENDAR ---- */
+  /* ---- 3-DAY CALENDAR ---- */
   .cal-card { flex: 1; min-height: 0; overflow: hidden; }
 
-  /* Up next banner */
   .cal-next-banner {
     background: #f59e0b12;
     border: 1px solid #f59e0b33;
     border-radius: 1.25rem;
-    padding: 1.5rem 2rem;
-    margin-bottom: 2rem;
+    padding: 1.2rem 1.8rem;
+    margin-bottom: 1.5rem;
     display: flex;
     align-items: center;
-    gap: 2rem;
+    gap: 1.5rem;
   }
-  .cal-next-label { font-size: 1.3rem; color: #f59e0b; text-transform: uppercase; letter-spacing: 0.1em; }
-  .cal-next-title { font-size: 2.2rem; }
-  .cal-next-time { font-size: 1.6rem; color: #f59e0b; }
-  .cal-next-who { font-size: 1.4rem; color: #888; }
+  .cal-next-icon { font-size: 2.5rem; }
   .cal-next-info { flex: 1; }
+  .cal-next-label { font-size: 1.2rem; color: #f59e0b; text-transform: uppercase; letter-spacing: 0.1em; }
+  .cal-next-title { font-size: 2rem; margin-top: 0.2rem; }
+  .cal-next-time { font-size: 1.4rem; color: #f59e0b; }
 
-  /* Timeline */
-  .cal-timeline {
+  /* Legend */
+  .cal-legend {
     display: flex;
+    gap: 2rem;
+    margin-bottom: 1.2rem;
+    flex-wrap: wrap;
+  }
+  .cal-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.2rem;
+    color: #888;
+  }
+  .cal-legend-dot {
+    width: 1rem;
+    height: 1rem;
+    border-radius: 50%;
+  }
+  .cal-legend-dot.c-andrew { background: #3b82f6; }
+  .cal-legend-dot.c-sarah { background: #a855f7; }
+  .cal-legend-dot.c-will { background: #22c55e; }
+  .cal-legend-dot.c-charlotte { background: #ec4899; }
+  .cal-legend-dot.c-james { background: #f59e0b; }
+
+  /* 3-day grid */
+  .cal-3day {
+    display: grid;
+    grid-template-columns: 5.5rem repeat(3, 1fr);
     flex: 1;
     min-height: 0;
     position: relative;
   }
 
-  /* Hour column */
+  /* Day headers */
+  .cal-day-header {
+    text-align: center;
+    padding: 0.8rem 0;
+    border-bottom: 2px solid #2a2a2a;
+    position: sticky;
+    top: 0;
+    background: #1a1a1a;
+    z-index: 5;
+  }
+  .cal-day-header.today { border-bottom-color: #3b82f6; }
+  .cal-day-name { font-size: 1.3rem; color: #888; text-transform: uppercase; letter-spacing: 0.05em; }
+  .cal-day-date { font-size: 2rem; font-weight: 500; margin-top: 0.2rem; }
+  .cal-day-date.today-date { color: #3b82f6; }
+  .cal-corner {
+    border-bottom: 2px solid #2a2a2a;
+    position: sticky;
+    top: 0;
+    background: #1a1a1a;
+    z-index: 5;
+  }
+
+  /* Hour labels column */
   .cal-hours {
-    width: 7rem;
-    flex-shrink: 0;
     position: relative;
+    border-right: 1px solid #1f1f1f;
   }
   .cal-hour-mark {
     position: absolute;
-    left: 0;
-    font-size: 1.3rem;
+    right: 0.8rem;
+    font-size: 1.15rem;
     color: #555;
     font-family: monospace;
     transform: translateY(-50%);
+    text-align: right;
   }
 
-  /* Lanes container */
-  .cal-lanes {
-    flex: 1;
-    display: flex;
-    gap: 1rem;
+  /* Day column */
+  .cal-day-col {
     position: relative;
-    min-height: 0;
+    border-right: 1px solid #1a1a1a;
   }
+  .cal-day-col:last-child { border-right: none; }
 
-  /* Hour grid lines */
-  .cal-gridlines {
+  /* Grid lines inside day columns */
+  .cal-day-gridlines {
     position: absolute;
     inset: 0;
     pointer-events: none;
   }
-  .cal-gridline {
+  .cal-hline {
     position: absolute;
-    left: 0;
-    right: 0;
-    border-top: 1px solid #1f1f1f;
+    left: 0; right: 0;
+    border-top: 1px solid #1a1a1a;
+  }
+  .cal-hline-half {
+    border-top: 1px dotted #151515;
   }
 
-  /* Now indicator */
+  /* Now line */
   .cal-now {
     position: absolute;
-    left: -1rem;
-    right: 0;
+    left: -0.5rem; right: 0;
     display: flex;
     align-items: center;
     z-index: 10;
   }
-  .cal-now-dot {
-    width: 1rem;
-    height: 1rem;
-    background: #ef4444;
-    border-radius: 50%;
-    flex-shrink: 0;
-  }
-  .cal-now-line {
-    flex: 1;
-    height: 2px;
-    background: #ef4444;
-  }
+  .cal-now-dot { width: 0.8rem; height: 0.8rem; background: #ef4444; border-radius: 50%; flex-shrink: 0; }
+  .cal-now-line { flex: 1; height: 2px; background: #ef4444; }
 
-  /* Person lane */
-  .cal-lane {
-    flex: 1;
-    position: relative;
-    min-width: 0;
-  }
-  .cal-lane-header {
-    text-align: center;
-    padding-bottom: 0.8rem;
-    border-bottom: 1px solid #2a2a2a;
-    margin-bottom: 0.5rem;
-    position: sticky;
-    top: 0;
-    z-index: 5;
-    background: #1a1a1a;
-  }
-  .cal-lane-avatar {
-    width: 3.5rem;
-    height: 3.5rem;
-    border-radius: 50%;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.6rem;
-    margin-bottom: 0.3rem;
-  }
-  .cal-lane-name {
-    font-size: 1.3rem;
-    color: #888;
-    font-weight: 500;
-  }
-
-  .cal-lane-body {
-    position: relative;
-    flex: 1;
-  }
-
-  /* Event block */
-  .cal-event {
+  /* Event blocks */
+  .cal-ev {
     position: absolute;
-    left: 0.4rem;
-    right: 0.4rem;
-    border-radius: 0.8rem;
-    padding: 0.6rem 0.8rem;
+    left: 0.3rem; right: 0.3rem;
+    border-radius: 0.6rem;
+    padding: 0.4rem 0.6rem;
     overflow: hidden;
+    min-height: 2.5rem;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    min-height: 3.5rem;
   }
-  .cal-event-title {
-    font-size: 1.3rem;
-    font-weight: 500;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  .cal-event-time {
-    font-size: 1.1rem;
-    opacity: 0.7;
-    white-space: nowrap;
-  }
-  .cal-event-loc {
-    font-size: 1rem;
-    opacity: 0.5;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
+  .cal-ev-title { font-size: 1.15rem; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .cal-ev-time { font-size: 1rem; opacity: 0.7; white-space: nowrap; }
+  .cal-ev-loc { font-size: 0.9rem; opacity: 0.5; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+  /* Stacked events in same slot */
+  .cal-ev-stack-2 { left: 0.3rem; right: 52%; }
+  .cal-ev-stack-2b { left: 50%; right: 0.3rem; }
+  .cal-ev-stack-3 { left: 0.3rem; right: 68%; }
+  .cal-ev-stack-3b { left: 34%; right: 34%; }
+  .cal-ev-stack-3c { left: 68%; right: 0.3rem; }
 
   /* Person colors */
-  .color-andrew { background: #1e3a5f; border-left: 4px solid #3b82f6; }
-  .color-andrew .cal-lane-avatar { background: #1e3a5f; border: 2px solid #3b82f6; }
-  .color-sarah { background: #3b1f4e; border-left: 4px solid #a855f7; }
-  .color-sarah .cal-lane-avatar { background: #3b1f4e; border: 2px solid #a855f7; }
-  .color-will { background: #1a3d2e; border-left: 4px solid #22c55e; }
-  .color-will .cal-lane-avatar { background: #1a3d2e; border: 2px solid #22c55e; }
-  .color-charlotte { background: #4a2532; border-left: 4px solid #ec4899; }
-  .color-charlotte .cal-lane-avatar { background: #4a2532; border: 2px solid #ec4899; }
-  .color-james { background: #3d3019; border-left: 4px solid #f59e0b; }
-  .color-james .cal-lane-avatar { background: #3d3019; border: 2px solid #f59e0b; }
+  .ev-andrew { background: #1e3a5f; border-left: 3px solid #3b82f6; }
+  .ev-sarah { background: #3b1f4e; border-left: 3px solid #a855f7; }
+  .ev-will { background: #1a3d2e; border-left: 3px solid #22c55e; }
+  .ev-charlotte { background: #4a2532; border-left: 3px solid #ec4899; }
+  .ev-james { background: #3d3019; border-left: 3px solid #f59e0b; }
+  .ev-family { background: #2a2a2a; border-left: 3px solid #888; }
 
-  /* Shared event (spans multiple lanes) */
-  .cal-event-shared {
-    background: #2a2a2a;
-    border-left: 4px solid #888;
+  /* Shared/family event spanning full width */
+  .cal-ev-full {
+    left: 0.3rem;
+    right: 0.3rem;
   }
 
   /* ---- CAMERAS ---- */
   .cameras-row {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 2.5rem;
+    gap: 2rem;
   }
   .cam-card {
     background: #1a1a1a;
     border: 1px solid #2a2a2a;
-    border-radius: 2rem;
+    border-radius: 1.5rem;
     overflow: hidden;
   }
   .cam-feed {
@@ -262,39 +245,61 @@
   }
   .cam-feed::before {
     content: '';
-    position: absolute;
-    inset: 0;
+    position: absolute; inset: 0;
     background:
       radial-gradient(ellipse at 30% 40%, #1a1a2a 0%, transparent 60%),
       radial-gradient(ellipse at 70% 60%, #1a2a1a 0%, transparent 60%);
     opacity: 0.5;
   }
-  .cam-feed-icon { font-size: 4rem; color: #333; z-index: 1; }
-  .cam-live-dot {
-    position: absolute; top: 1.2rem; left: 1.5rem;
-    display: flex; align-items: center; gap: 0.6rem; z-index: 2;
-  }
-  .cam-live-indicator {
-    width: 1rem; height: 1rem; background: #ef4444; border-radius: 50%;
-    animation: cam-pulse 2s ease-in-out infinite;
-  }
+  .cam-feed-icon { font-size: 3.5rem; color: #333; z-index: 1; }
+  .cam-live-dot { position: absolute; top: 1rem; left: 1.2rem; display: flex; align-items: center; gap: 0.5rem; z-index: 2; }
+  .cam-live-indicator { width: 0.8rem; height: 0.8rem; background: #ef4444; border-radius: 50%; animation: cam-pulse 2s ease-in-out infinite; }
   @keyframes cam-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
-  .cam-live-text { font-size: 1.2rem; color: #ef4444; font-weight: 600; }
-  .cam-timestamp { position: absolute; bottom: 1rem; right: 1.2rem; font-size: 1.1rem; color: #666; font-family: monospace; z-index: 2; }
-  .cam-info { padding: 1.2rem 1.5rem; display: flex; align-items: center; justify-content: space-between; }
-  .cam-name { font-size: 1.6rem; font-weight: 500; }
-  .cam-status { font-size: 1.2rem; color: #4ade80; }
+  .cam-live-text { font-size: 1.1rem; color: #ef4444; font-weight: 600; }
+  .cam-timestamp { position: absolute; bottom: 0.8rem; right: 1rem; font-size: 1rem; color: #666; font-family: monospace; z-index: 2; }
+  .cam-info { padding: 1rem 1.2rem; display: flex; align-items: center; justify-content: space-between; }
+  .cam-name { font-size: 1.4rem; font-weight: 500; }
+  .cam-status { font-size: 1.1rem; color: #4ade80; }
 
-  /* ---- SCRYPTED EVENTS ---- */
-  .events-strip {
+  /* ---- BOTTOM BAR ---- */
+  .bottom-bar {
     display: flex;
-    gap: 2rem;
-    overflow-x: auto;
+    align-items: center;
+    gap: 3rem;
+    height: 100%;
+  }
+  .appliance { display: flex; align-items: center; gap: 1rem; }
+  .appliance-icon { font-size: 2.5rem; }
+  .appliance-info { display: flex; flex-direction: column; }
+  .appliance-name { font-size: 1.3rem; color: #888; text-transform: uppercase; letter-spacing: 0.05em; }
+  .appliance-status { font-size: 1.8rem; font-weight: 300; }
+  .appliance-status.done { color: #4ade80; }
+  .appliance-divider { width: 1px; height: 3.5rem; background: #2a2a2a; }
+  .washer-done-badge { display: flex; align-items: center; gap: 0.7rem; }
+  .done-ping { position: relative; width: 1.4rem; height: 1.4rem; }
+  .done-ping-dot { width: 1.4rem; height: 1.4rem; background: #4ade80; border-radius: 50%; position: absolute; }
+  .done-ping-ring { width: 1.4rem; height: 1.4rem; border: 2px solid #4ade80; border-radius: 50%; position: absolute; animation: ping-ring 1.5s ease-out infinite; }
+  @keyframes ping-ring { 0% { transform: scale(1); opacity: 0.8; } 100% { transform: scale(2.5); opacity: 0; } }
+  .status-item { display: flex; align-items: center; gap: 1rem; }
+  .status-icon { font-size: 2.5rem; }
+  .status-info { display: flex; flex-direction: column; }
+  .status-name { font-size: 1.3rem; color: #888; text-transform: uppercase; letter-spacing: 0.05em; }
+  .status-state { font-size: 1.8rem; font-weight: 300; }
+  .status-state.closed { color: #4ade80; }
+  .announce-icon { font-size: 2.5rem; }
+  .announce-text { font-size: 2rem; color: #aaa; flex: 1; }
+  .announce-steve { font-size: 1.5rem; color: #666; display: flex; align-items: center; gap: 0.6rem; white-space: nowrap; }
+
+  /* ---- RIGHT SIDEBAR: EVENTS ---- */
+  .events-card { flex: 1; min-height: 0; }
+  .events-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    overflow-y: auto;
     flex: 1;
   }
   .event-thumb {
-    flex-shrink: 0;
-    width: 20rem;
     background: #111;
     border-radius: 1.25rem;
     overflow: hidden;
@@ -314,52 +319,25 @@
     background: radial-gradient(ellipse at 50% 50%, #1a1a2e 0%, transparent 70%);
     opacity: 0.4;
   }
-  .event-snap-icon { font-size: 3rem; color: #444; z-index: 1; }
+  .event-snap-icon { font-size: 2.5rem; color: #444; z-index: 1; }
   .event-badge {
-    position: absolute; top: 0.8rem; left: 0.8rem;
-    padding: 0.3rem 0.8rem; border-radius: 0.6rem;
-    font-size: 1.1rem; font-weight: 600; z-index: 2;
+    position: absolute; top: 0.6rem; left: 0.6rem;
+    padding: 0.25rem 0.6rem; border-radius: 0.5rem;
+    font-size: 1rem; font-weight: 600; z-index: 2;
   }
   .event-badge.person { background: #7c3aed88; color: #c4b5fd; border: 1px solid #7c3aed55; }
   .event-badge.motion { background: #0369a188; color: #7dd3fc; border: 1px solid #0369a155; }
   .event-badge.vehicle { background: #b4530088; color: #fdba74; border: 1px solid #b4530055; }
   .event-badge.animal { background: #15803d88; color: #86efac; border: 1px solid #15803d55; }
-  .event-info { padding: 0.8rem 1rem; }
-  .event-camera { font-size: 1.3rem; font-weight: 500; }
-  .event-time { font-size: 1.1rem; color: #666; margin-top: 0.2rem; }
-
-  /* ---- APPLIANCES BAR ---- */
-  .appliances-inner { display: flex; align-items: center; gap: 3.5rem; height: 100%; }
-  .appliance { display: flex; align-items: center; gap: 1.2rem; }
-  .appliance-icon { font-size: 3rem; }
-  .appliance-info { display: flex; flex-direction: column; }
-  .appliance-name { font-size: 1.4rem; color: #888; text-transform: uppercase; letter-spacing: 0.05em; }
-  .appliance-status { font-size: 2rem; font-weight: 300; }
-  .appliance-status.done { color: #4ade80; }
-  .appliance-divider { width: 1px; height: 4rem; background: #2a2a2a; }
-  .washer-done-badge { display: flex; align-items: center; gap: 0.8rem; }
-  .done-ping { position: relative; width: 1.6rem; height: 1.6rem; }
-  .done-ping-dot { width: 1.6rem; height: 1.6rem; background: #4ade80; border-radius: 50%; position: absolute; }
-  .done-ping-ring { width: 1.6rem; height: 1.6rem; border: 2px solid #4ade80; border-radius: 50%; position: absolute; animation: ping-ring 1.5s ease-out infinite; }
-  @keyframes ping-ring { 0% { transform: scale(1); opacity: 0.8; } 100% { transform: scale(2.5); opacity: 0; } }
-  .status-item { display: flex; align-items: center; gap: 1.2rem; }
-  .status-icon { font-size: 3rem; }
-  .status-info { display: flex; flex-direction: column; }
-  .status-name { font-size: 1.4rem; color: #888; text-transform: uppercase; letter-spacing: 0.05em; }
-  .status-state { font-size: 2rem; font-weight: 300; }
-  .status-state.closed { color: #4ade80; }
-
-  /* ---- ANNOUNCEMENTS ---- */
-  .announce-bar { display: flex; align-items: center; gap: 2.5rem; height: 100%; }
-  .announce-icon { font-size: 3.5rem; }
-  .announce-text { font-size: 2.4rem; color: #aaa; flex: 1; }
-  .announce-steve { font-size: 1.8rem; color: #666; display: flex; align-items: center; gap: 0.8rem; white-space: nowrap; }
+  .event-info { padding: 0.6rem 0.8rem; }
+  .event-camera { font-size: 1.2rem; font-weight: 500; }
+  .event-time { font-size: 1rem; color: #666; margin-top: 0.15rem; }
 </style>
 </head>
 <body>
 <div class="layout">
 
-  <!-- ========== SIDEBAR ========== -->
+  <!-- ========== LEFT SIDEBAR ========== -->
   <div class="sidebar">
     <div class="card clock-card">
       <div class="clock-time">8:14</div>
@@ -388,187 +366,281 @@
     </div>
   </div>
 
-  <!-- ========== MAIN ========== -->
-  <div class="main">
+  <!-- ========== CENTER ========== -->
+  <div class="center">
 
-    <!-- Row 1: Family Calendar (full width, takes most space) -->
+    <!-- 3-Day Family Calendar -->
     <div class="card cal-card">
-      <div class="card-label">Today — Family Schedule</div>
+      <div class="card-label">Family Schedule</div>
 
-      <!-- Up next banner -->
       <div class="cal-next-banner">
-        <div style="font-size:3rem;">⏰</div>
+        <div class="cal-next-icon">⏰</div>
         <div class="cal-next-info">
           <div class="cal-next-label">Up next</div>
-          <div class="cal-next-title">Charlotte — piano</div>
+          <div class="cal-next-title">Charlotte — piano @ Weston Creek</div>
           <div class="cal-next-time">3:15 PM — in 7 hours</div>
-          <div class="cal-next-who">@ Weston Creek</div>
         </div>
       </div>
 
-      <!-- Stacked timeline: 7AM–9PM, 5 lanes -->
-      <div class="cal-timeline" style="flex:1; min-height:0;">
-        <!-- Hour labels -->
-        <div class="cal-hours">
-          <div class="cal-hour-mark" style="top: 0%;">7 AM</div>
-          <div class="cal-hour-mark" style="top: 7.14%;">8 AM</div>
-          <div class="cal-hour-mark" style="top: 14.28%;">9 AM</div>
-          <div class="cal-hour-mark" style="top: 21.42%;">10 AM</div>
-          <div class="cal-hour-mark" style="top: 28.57%;">11 AM</div>
-          <div class="cal-hour-mark" style="top: 35.71%;">12 PM</div>
-          <div class="cal-hour-mark" style="top: 42.85%;">1 PM</div>
-          <div class="cal-hour-mark" style="top: 50%;">2 PM</div>
-          <div class="cal-hour-mark" style="top: 57.14%;">3 PM</div>
-          <div class="cal-hour-mark" style="top: 64.28%;">4 PM</div>
-          <div class="cal-hour-mark" style="top: 71.42%;">5 PM</div>
-          <div class="cal-hour-mark" style="top: 78.57%;">6 PM</div>
-          <div class="cal-hour-mark" style="top: 85.71%;">7 PM</div>
-          <div class="cal-hour-mark" style="top: 92.85%;">8 PM</div>
+      <div class="cal-legend">
+        <div class="cal-legend-item"><div class="cal-legend-dot c-andrew"></div>Andrew</div>
+        <div class="cal-legend-item"><div class="cal-legend-dot c-sarah"></div>Sarah</div>
+        <div class="cal-legend-item"><div class="cal-legend-dot c-will"></div>Will</div>
+        <div class="cal-legend-item"><div class="cal-legend-dot c-charlotte"></div>Charlotte</div>
+        <div class="cal-legend-item"><div class="cal-legend-dot c-james"></div>James</div>
+      </div>
+
+      <!-- Timeline: 7AM-9PM = 14 hours. Each hour = 7.14% -->
+      <div class="cal-3day">
+        <!-- Headers -->
+        <div class="cal-corner"></div>
+        <div class="cal-day-header today">
+          <div class="cal-day-name">Wed</div>
+          <div class="cal-day-date today-date">26</div>
+        </div>
+        <div class="cal-day-header">
+          <div class="cal-day-name">Thu</div>
+          <div class="cal-day-date">27</div>
+        </div>
+        <div class="cal-day-header">
+          <div class="cal-day-name">Fri</div>
+          <div class="cal-day-date">28</div>
         </div>
 
-        <div class="cal-lanes">
-          <!-- Grid lines -->
-          <div class="cal-gridlines">
-            <div class="cal-gridline" style="top: 0%;"></div>
-            <div class="cal-gridline" style="top: 7.14%;"></div>
-            <div class="cal-gridline" style="top: 14.28%;"></div>
-            <div class="cal-gridline" style="top: 21.42%;"></div>
-            <div class="cal-gridline" style="top: 28.57%;"></div>
-            <div class="cal-gridline" style="top: 35.71%;"></div>
-            <div class="cal-gridline" style="top: 42.85%;"></div>
-            <div class="cal-gridline" style="top: 50%;"></div>
-            <div class="cal-gridline" style="top: 57.14%;"></div>
-            <div class="cal-gridline" style="top: 64.28%;"></div>
-            <div class="cal-gridline" style="top: 71.42%;"></div>
-            <div class="cal-gridline" style="top: 78.57%;"></div>
-            <div class="cal-gridline" style="top: 85.71%;"></div>
-            <div class="cal-gridline" style="top: 92.85%;"></div>
+        <!-- Hour labels -->
+        <div class="cal-hours">
+          <div class="cal-hour-mark" style="top:0%">7a</div>
+          <div class="cal-hour-mark" style="top:7.14%">8a</div>
+          <div class="cal-hour-mark" style="top:14.28%">9a</div>
+          <div class="cal-hour-mark" style="top:21.42%">10a</div>
+          <div class="cal-hour-mark" style="top:28.57%">11a</div>
+          <div class="cal-hour-mark" style="top:35.71%">12p</div>
+          <div class="cal-hour-mark" style="top:42.85%">1p</div>
+          <div class="cal-hour-mark" style="top:50%">2p</div>
+          <div class="cal-hour-mark" style="top:57.14%">3p</div>
+          <div class="cal-hour-mark" style="top:64.28%">4p</div>
+          <div class="cal-hour-mark" style="top:71.42%">5p</div>
+          <div class="cal-hour-mark" style="top:78.57%">6p</div>
+          <div class="cal-hour-mark" style="top:85.71%">7p</div>
+          <div class="cal-hour-mark" style="top:92.85%">8p</div>
+        </div>
+
+        <!-- ======= TODAY (Wed 26) ======= -->
+        <div class="cal-day-col">
+          <div class="cal-day-gridlines">
+            <div class="cal-hline" style="top:0%"></div>
+            <div class="cal-hline cal-hline-half" style="top:3.57%"></div>
+            <div class="cal-hline" style="top:7.14%"></div>
+            <div class="cal-hline cal-hline-half" style="top:10.71%"></div>
+            <div class="cal-hline" style="top:14.28%"></div>
+            <div class="cal-hline cal-hline-half" style="top:17.85%"></div>
+            <div class="cal-hline" style="top:21.42%"></div>
+            <div class="cal-hline cal-hline-half" style="top:25%"></div>
+            <div class="cal-hline" style="top:28.57%"></div>
+            <div class="cal-hline cal-hline-half" style="top:32.14%"></div>
+            <div class="cal-hline" style="top:35.71%"></div>
+            <div class="cal-hline cal-hline-half" style="top:39.28%"></div>
+            <div class="cal-hline" style="top:42.85%"></div>
+            <div class="cal-hline cal-hline-half" style="top:46.42%"></div>
+            <div class="cal-hline" style="top:50%"></div>
+            <div class="cal-hline cal-hline-half" style="top:53.57%"></div>
+            <div class="cal-hline" style="top:57.14%"></div>
+            <div class="cal-hline cal-hline-half" style="top:60.71%"></div>
+            <div class="cal-hline" style="top:64.28%"></div>
+            <div class="cal-hline cal-hline-half" style="top:67.85%"></div>
+            <div class="cal-hline" style="top:71.42%"></div>
+            <div class="cal-hline cal-hline-half" style="top:75%"></div>
+            <div class="cal-hline" style="top:78.57%"></div>
+            <div class="cal-hline cal-hline-half" style="top:82.14%"></div>
+            <div class="cal-hline" style="top:85.71%"></div>
+            <div class="cal-hline cal-hline-half" style="top:89.28%"></div>
+            <div class="cal-hline" style="top:92.85%"></div>
           </div>
 
-          <!-- Now line (8:14 AM → ~8.23% from top) -->
-          <div class="cal-now" style="top: 8.8%;">
+          <!-- Now line: 8:14 AM -->
+          <div class="cal-now" style="top:8.8%">
             <div class="cal-now-dot"></div>
             <div class="cal-now-line"></div>
           </div>
 
-          <!-- Andrew -->
-          <div class="cal-lane">
-            <div class="cal-lane-header">
-              <div class="cal-lane-avatar color-andrew">👨</div>
-              <div class="cal-lane-name">Andrew</div>
-            </div>
-            <div class="cal-lane-body">
-              <!-- School drop-off 8:15–8:45 → 8.9% to 12.5% -->
-              <div class="cal-event color-andrew" style="top: 8.9%; height: 3.6%;">
-                <div class="cal-event-title">School drop-off</div>
-              </div>
-              <!-- Work 9:00–17:00 → 14.28% to 71.42% -->
-              <div class="cal-event color-andrew" style="top: 14.28%; height: 57.14%;">
-                <div class="cal-event-title">Work</div>
-                <div class="cal-event-time">9 AM – 5 PM</div>
-                <div class="cal-event-loc">Cloudflare (remote)</div>
-              </div>
-            </div>
+          <!-- Andrew: drop-off 8:15-8:45 -->
+          <div class="cal-ev ev-andrew cal-ev-stack-2" style="top:8.9%;height:3.6%">
+            <div class="cal-ev-title">🚗 Drop-off</div>
           </div>
-
-          <!-- Sarah -->
-          <div class="cal-lane">
-            <div class="cal-lane-header">
-              <div class="cal-lane-avatar color-sarah">👩</div>
-              <div class="cal-lane-name">Sarah</div>
-            </div>
-            <div class="cal-lane-body">
-              <!-- Coffee catch-up 10:00–11:00 → 21.42% to 28.57% -->
-              <div class="cal-event color-sarah" style="top: 21.42%; height: 7.14%;">
-                <div class="cal-event-title">Coffee with Mel</div>
-                <div class="cal-event-time">10 – 11 AM</div>
-                <div class="cal-event-loc">@ Milk Bar, Kingston</div>
-              </div>
-              <!-- Charlotte piano pickup 3:15–4:15 -->
-              <div class="cal-event color-sarah" style="top: 58.9%; height: 7.14%;">
-                <div class="cal-event-title">Charlotte → piano</div>
-                <div class="cal-event-time">3:15 – 4:15 PM</div>
-                <div class="cal-event-loc">@ Weston Creek</div>
-              </div>
-            </div>
+          <!-- Sarah: drop-off helper (same time) -->
+          <!-- Andrew: Work 9-5 -->
+          <div class="cal-ev ev-andrew cal-ev-stack-2" style="top:14.28%;height:57.14%">
+            <div class="cal-ev-title">Work</div>
+            <div class="cal-ev-time">9a–5p</div>
           </div>
-
-          <!-- Will -->
-          <div class="cal-lane">
-            <div class="cal-lane-header">
-              <div class="cal-lane-avatar color-will">🧒</div>
-              <div class="cal-lane-name">Will</div>
-            </div>
-            <div class="cal-lane-body">
-              <!-- School 8:30–3:00 → 10.7% to 57.14% -->
-              <div class="cal-event color-will" style="top: 10.7%; height: 46.4%;">
-                <div class="cal-event-title">School</div>
-                <div class="cal-event-time">8:30 – 3 PM</div>
-              </div>
-              <!-- Soccer training 4:30–5:30 → 64.28% to 71.42% -->
-              <div class="cal-event color-will" style="top: 64.28%; height: 7.14%;">
-                <div class="cal-event-title">Soccer training</div>
-                <div class="cal-event-time">4:30 – 5:30 PM</div>
-              </div>
-            </div>
+          <!-- Kids: School 8:30-3 -->
+          <div class="cal-ev ev-will cal-ev-stack-3" style="top:10.7%;height:46.4%">
+            <div class="cal-ev-title">Will</div>
+            <div class="cal-ev-time">School</div>
           </div>
-
-          <!-- Charlotte -->
-          <div class="cal-lane">
-            <div class="cal-lane-header">
-              <div class="cal-lane-avatar color-charlotte">👧</div>
-              <div class="cal-lane-name">Charlotte</div>
-            </div>
-            <div class="cal-lane-body">
-              <!-- School -->
-              <div class="cal-event color-charlotte" style="top: 10.7%; height: 46.4%;">
-                <div class="cal-event-title">School</div>
-                <div class="cal-event-time">8:30 – 3 PM</div>
-              </div>
-              <!-- Piano 3:15–4:00 -->
-              <div class="cal-event color-charlotte" style="top: 58.9%; height: 5.35%;">
-                <div class="cal-event-title">Piano lesson</div>
-                <div class="cal-event-time">3:15 – 4 PM</div>
-                <div class="cal-event-loc">@ Weston Creek</div>
-              </div>
-            </div>
+          <div class="cal-ev ev-charlotte cal-ev-stack-3b" style="top:10.7%;height:46.4%">
+            <div class="cal-ev-title">Charl.</div>
+            <div class="cal-ev-time">School</div>
           </div>
-
-          <!-- James -->
-          <div class="cal-lane">
-            <div class="cal-lane-header">
-              <div class="cal-lane-avatar color-james">👦</div>
-              <div class="cal-lane-name">James</div>
-            </div>
-            <div class="cal-lane-body">
-              <!-- School -->
-              <div class="cal-event color-james" style="top: 10.7%; height: 46.4%;">
-                <div class="cal-event-title">School</div>
-                <div class="cal-event-time">8:30 – 3 PM</div>
-              </div>
-              <!-- Basketball 5:00–6:00 -->
-              <div class="cal-event color-james" style="top: 71.42%; height: 7.14%;">
-                <div class="cal-event-title">Basketball</div>
-                <div class="cal-event-time">5 – 6 PM</div>
-                <div class="cal-event-loc">@ Queanbeyan PCYC</div>
-              </div>
-            </div>
+          <div class="cal-ev ev-james cal-ev-stack-3c" style="top:10.7%;height:46.4%">
+            <div class="cal-ev-title">James</div>
+            <div class="cal-ev-time">School</div>
           </div>
-
+          <!-- Sarah: Coffee 10-11 -->
+          <div class="cal-ev ev-sarah cal-ev-stack-2b" style="top:21.42%;height:7.14%">
+            <div class="cal-ev-title">☕ Coffee w/ Mel</div>
+            <div class="cal-ev-loc">Kingston</div>
+          </div>
+          <!-- Charlotte: Piano 3:15-4 -->
+          <div class="cal-ev ev-charlotte cal-ev-stack-2" style="top:58.9%;height:5.35%">
+            <div class="cal-ev-title">🎹 Piano</div>
+            <div class="cal-ev-loc">Weston Ck</div>
+          </div>
+          <!-- Sarah: Piano drive -->
+          <div class="cal-ev ev-sarah cal-ev-stack-2b" style="top:58.9%;height:7.14%">
+            <div class="cal-ev-title">🚗 Charlotte</div>
+            <div class="cal-ev-time">→ piano</div>
+          </div>
+          <!-- Will: Soccer 4:30-5:30 -->
+          <div class="cal-ev ev-will cal-ev-stack-2" style="top:64.28%;height:7.14%">
+            <div class="cal-ev-title">⚽ Soccer</div>
+          </div>
+          <!-- James: Basketball 5-6 -->
+          <div class="cal-ev ev-james cal-ev-stack-2b" style="top:71.42%;height:7.14%">
+            <div class="cal-ev-title">🏀 Basketball</div>
+            <div class="cal-ev-loc">PCYC</div>
+          </div>
+          <!-- Taco Night 6:30-7:30 -->
+          <div class="cal-ev ev-family cal-ev-full" style="top:78.57%;height:7.14%">
+            <div class="cal-ev-title">🌮 Taco Night</div>
+            <div class="cal-ev-time">6:30p · Family</div>
+          </div>
         </div>
-      </div>
 
-      <!-- Family dinner banner -->
-      <div style="margin-top:1.5rem; padding:1.2rem 2rem; background:#2a2a2a; border-radius:1rem; display:flex; align-items:center; gap:1.5rem;">
-        <span style="font-size:2.5rem;">🌮</span>
-        <div>
-          <div style="font-size:1.8rem; font-weight:500;">Taco Night</div>
-          <div style="font-size:1.4rem; color:#888;">6:30 PM — whole family</div>
+        <!-- ======= TOMORROW (Thu 27) ======= -->
+        <div class="cal-day-col">
+          <div class="cal-day-gridlines">
+            <div class="cal-hline" style="top:0%"></div>
+            <div class="cal-hline cal-hline-half" style="top:3.57%"></div>
+            <div class="cal-hline" style="top:7.14%"></div>
+            <div class="cal-hline cal-hline-half" style="top:10.71%"></div>
+            <div class="cal-hline" style="top:14.28%"></div>
+            <div class="cal-hline cal-hline-half" style="top:17.85%"></div>
+            <div class="cal-hline" style="top:21.42%"></div>
+            <div class="cal-hline cal-hline-half" style="top:25%"></div>
+            <div class="cal-hline" style="top:28.57%"></div>
+            <div class="cal-hline cal-hline-half" style="top:32.14%"></div>
+            <div class="cal-hline" style="top:35.71%"></div>
+            <div class="cal-hline cal-hline-half" style="top:39.28%"></div>
+            <div class="cal-hline" style="top:42.85%"></div>
+            <div class="cal-hline cal-hline-half" style="top:46.42%"></div>
+            <div class="cal-hline" style="top:50%"></div>
+            <div class="cal-hline cal-hline-half" style="top:53.57%"></div>
+            <div class="cal-hline" style="top:57.14%"></div>
+            <div class="cal-hline cal-hline-half" style="top:60.71%"></div>
+            <div class="cal-hline" style="top:64.28%"></div>
+            <div class="cal-hline cal-hline-half" style="top:67.85%"></div>
+            <div class="cal-hline" style="top:71.42%"></div>
+            <div class="cal-hline cal-hline-half" style="top:75%"></div>
+            <div class="cal-hline" style="top:78.57%"></div>
+            <div class="cal-hline cal-hline-half" style="top:82.14%"></div>
+            <div class="cal-hline" style="top:85.71%"></div>
+            <div class="cal-hline cal-hline-half" style="top:89.28%"></div>
+            <div class="cal-hline" style="top:92.85%"></div>
+          </div>
+          <!-- Andrew: Work 9-5 -->
+          <div class="cal-ev ev-andrew cal-ev-stack-2" style="top:14.28%;height:57.14%">
+            <div class="cal-ev-title">Work</div>
+            <div class="cal-ev-time">9a–5p</div>
+          </div>
+          <!-- Kids: School -->
+          <div class="cal-ev ev-will cal-ev-stack-3" style="top:10.7%;height:46.4%">
+            <div class="cal-ev-title">Will</div>
+            <div class="cal-ev-time">School</div>
+          </div>
+          <div class="cal-ev ev-charlotte cal-ev-stack-3b" style="top:10.7%;height:46.4%">
+            <div class="cal-ev-title">Charl.</div>
+            <div class="cal-ev-time">School</div>
+          </div>
+          <div class="cal-ev ev-james cal-ev-stack-3c" style="top:10.7%;height:46.4%">
+            <div class="cal-ev-title">James</div>
+            <div class="cal-ev-time">School</div>
+          </div>
+          <!-- Sarah: Physio 2-3 -->
+          <div class="cal-ev ev-sarah cal-ev-stack-2b" style="top:50%;height:7.14%">
+            <div class="cal-ev-title">🩺 Physio</div>
+            <div class="cal-ev-loc">Queanbeyan</div>
+          </div>
+          <!-- James: Tutoring 4-5 -->
+          <div class="cal-ev ev-james cal-ev-stack-2b" style="top:64.28%;height:7.14%">
+            <div class="cal-ev-title">📚 Tutoring</div>
+          </div>
         </div>
+
+        <!-- ======= FRIDAY (Feb 28) ======= -->
+        <div class="cal-day-col">
+          <div class="cal-day-gridlines">
+            <div class="cal-hline" style="top:0%"></div>
+            <div class="cal-hline cal-hline-half" style="top:3.57%"></div>
+            <div class="cal-hline" style="top:7.14%"></div>
+            <div class="cal-hline cal-hline-half" style="top:10.71%"></div>
+            <div class="cal-hline" style="top:14.28%"></div>
+            <div class="cal-hline cal-hline-half" style="top:17.85%"></div>
+            <div class="cal-hline" style="top:21.42%"></div>
+            <div class="cal-hline cal-hline-half" style="top:25%"></div>
+            <div class="cal-hline" style="top:28.57%"></div>
+            <div class="cal-hline cal-hline-half" style="top:32.14%"></div>
+            <div class="cal-hline" style="top:35.71%"></div>
+            <div class="cal-hline cal-hline-half" style="top:39.28%"></div>
+            <div class="cal-hline" style="top:42.85%"></div>
+            <div class="cal-hline cal-hline-half" style="top:46.42%"></div>
+            <div class="cal-hline" style="top:50%"></div>
+            <div class="cal-hline cal-hline-half" style="top:53.57%"></div>
+            <div class="cal-hline" style="top:57.14%"></div>
+            <div class="cal-hline cal-hline-half" style="top:60.71%"></div>
+            <div class="cal-hline" style="top:64.28%"></div>
+            <div class="cal-hline cal-hline-half" style="top:67.85%"></div>
+            <div class="cal-hline" style="top:71.42%"></div>
+            <div class="cal-hline cal-hline-half" style="top:75%"></div>
+            <div class="cal-hline" style="top:78.57%"></div>
+            <div class="cal-hline cal-hline-half" style="top:82.14%"></div>
+            <div class="cal-hline" style="top:85.71%"></div>
+            <div class="cal-hline cal-hline-half" style="top:89.28%"></div>
+            <div class="cal-hline" style="top:92.85%"></div>
+          </div>
+          <!-- Andrew: Work 9-5 -->
+          <div class="cal-ev ev-andrew cal-ev-stack-2" style="top:14.28%;height:57.14%">
+            <div class="cal-ev-title">Work</div>
+            <div class="cal-ev-time">9a–5p</div>
+          </div>
+          <!-- Kids: School 8:30-12:30 (Fri early) -->
+          <div class="cal-ev ev-will cal-ev-stack-3" style="top:10.7%;height:28.5%">
+            <div class="cal-ev-title">Will</div>
+            <div class="cal-ev-time">School (½)</div>
+          </div>
+          <div class="cal-ev ev-charlotte cal-ev-stack-3b" style="top:10.7%;height:28.5%">
+            <div class="cal-ev-title">Charl.</div>
+            <div class="cal-ev-time">School (½)</div>
+          </div>
+          <div class="cal-ev ev-james cal-ev-stack-3c" style="top:10.7%;height:28.5%">
+            <div class="cal-ev-title">James</div>
+            <div class="cal-ev-time">School (½)</div>
+          </div>
+          <!-- Family: Movie night 7-9 -->
+          <div class="cal-ev ev-family cal-ev-full" style="top:85.71%;height:14.28%">
+            <div class="cal-ev-title">🎬 Movie Night</div>
+            <div class="cal-ev-time">7p · Family</div>
+          </div>
+          <!-- Sarah: Grocery run 1-2 -->
+          <div class="cal-ev ev-sarah cal-ev-stack-2b" style="top:42.85%;height:7.14%">
+            <div class="cal-ev-title">🛒 Groceries</div>
+          </div>
+        </div>
+
       </div>
     </div>
 
-    <!-- Row 2: Live Camera Feeds -->
+    <!-- Cameras -->
     <div class="cameras-row">
       <div class="cam-card">
         <div class="cam-feed">
@@ -604,43 +676,16 @@
       </div>
     </div>
 
-    <!-- Row 3: Scrypted Events + Appliances -->
+    <!-- Bottom bar -->
     <div class="card">
-      <div class="card-label">Recent Activity</div>
-      <div class="events-strip">
-        <div class="event-thumb">
-          <div class="event-snap"><div class="event-badge person">👤 Person</div><div class="event-snap-icon">📸</div></div>
-          <div class="event-info"><div class="event-camera">Front Door</div><div class="event-time">8:02 AM · 12 min ago</div></div>
-        </div>
-        <div class="event-thumb">
-          <div class="event-snap"><div class="event-badge vehicle">🚗 Vehicle</div><div class="event-snap-icon">📸</div></div>
-          <div class="event-info"><div class="event-camera">Garage</div><div class="event-time">7:48 AM · 26 min ago</div></div>
-        </div>
-        <div class="event-thumb">
-          <div class="event-snap"><div class="event-badge person">👤 Person</div><div class="event-snap-icon">📸</div></div>
-          <div class="event-info"><div class="event-camera">Doorbell</div><div class="event-time">7:41 AM · 33 min ago</div></div>
-        </div>
-        <div class="event-thumb">
-          <div class="event-snap"><div class="event-badge animal">🐾 Animal</div><div class="event-snap-icon">📸</div></div>
-          <div class="event-info"><div class="event-camera">Back Door</div><div class="event-time">7:22 AM · 52 min ago</div></div>
-        </div>
-        <div class="event-thumb">
-          <div class="event-snap"><div class="event-badge motion">💨 Motion</div><div class="event-snap-icon">📸</div></div>
-          <div class="event-info"><div class="event-camera">Front Door</div><div class="event-time">6:55 AM · 1h 19m ago</div></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Row 4: Appliances + Status + Announcements -->
-    <div class="card">
-      <div class="appliances-inner">
+      <div class="bottom-bar">
         <div class="appliance">
           <div class="appliance-icon">👕</div>
           <div class="appliance-info">
-            <div class="appliance-name">Washing Machine</div>
+            <div class="appliance-name">Washer</div>
             <div class="washer-done-badge">
               <div class="done-ping"><div class="done-ping-dot"></div><div class="done-ping-ring"></div></div>
-              <div class="appliance-status done">Cycle complete — ready to hang!</div>
+              <div class="appliance-status done">Done — ready to hang!</div>
             </div>
           </div>
         </div>
@@ -648,18 +693,48 @@
         <div class="status-item">
           <div class="status-icon">🏠</div>
           <div class="status-info">
-            <div class="status-name">All Doors & Windows</div>
+            <div class="status-name">Doors & Windows</div>
             <div class="status-state closed">● All Secured</div>
           </div>
         </div>
         <div class="appliance-divider"></div>
         <div class="announce-icon">📢</div>
         <div class="announce-text">Bins go out tonight — it's recycling week</div>
-        <div class="announce-steve">🦞 Steve is online</div>
+        <div class="announce-steve">🦞 Steve</div>
       </div>
     </div>
 
   </div>
+
+  <!-- ========== RIGHT SIDEBAR: RECENT EVENTS ========== -->
+  <div class="right">
+    <div class="card events-card">
+      <div class="card-label">Recent Activity</div>
+      <div class="events-list">
+        <div class="event-thumb">
+          <div class="event-snap"><div class="event-badge person">👤 Person</div><div class="event-snap-icon">📸</div></div>
+          <div class="event-info"><div class="event-camera">Front Door</div><div class="event-time">8:02 AM · 12m ago</div></div>
+        </div>
+        <div class="event-thumb">
+          <div class="event-snap"><div class="event-badge vehicle">🚗 Vehicle</div><div class="event-snap-icon">📸</div></div>
+          <div class="event-info"><div class="event-camera">Garage</div><div class="event-time">7:48 AM · 26m ago</div></div>
+        </div>
+        <div class="event-thumb">
+          <div class="event-snap"><div class="event-badge person">👤 Person</div><div class="event-snap-icon">📸</div></div>
+          <div class="event-info"><div class="event-camera">Doorbell</div><div class="event-time">7:41 AM · 33m ago</div></div>
+        </div>
+        <div class="event-thumb">
+          <div class="event-snap"><div class="event-badge animal">🐾 Animal</div><div class="event-snap-icon">📸</div></div>
+          <div class="event-info"><div class="event-camera">Back Door</div><div class="event-time">7:22 AM · 52m ago</div></div>
+        </div>
+        <div class="event-thumb">
+          <div class="event-snap"><div class="event-badge motion">💨 Motion</div><div class="event-snap-icon">📸</div></div>
+          <div class="event-info"><div class="event-camera">Front Door</div><div class="event-time">6:55 AM · 1h 19m</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </div>
 </body>
 </html>
